@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Console\Commands\GenerateCelebrationOccurrences;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Api\ThemeCelebration;
 use App\Http\Requests\Api\ThemeCelebrationRequest;
+use App\Models\Api\ThemeCelebrationOccurrence;
 
 class ThemeCelebrationController extends Controller
 {
@@ -69,6 +71,10 @@ class ThemeCelebrationController extends Controller
         $item->deleted = 0;
         $item->save();
 
+        // Gera ocorrências somente para este culto
+        $command = new GenerateCelebrationOccurrences();
+        $command->generateFor($item); // método customizado só pra esse culto
+
         return response()->json([
             'message' => 'Celebração criada com sucesso.',
             'data' => $item
@@ -97,6 +103,13 @@ class ThemeCelebrationController extends Controller
         $item->start_time = $request->start_time;
         $item->active = $request->active ?? $item->active;
         $item->save();
+
+        // Remove ocorrências antigas dessa celebração
+        ThemeCelebrationOccurrence::where('id_theme_celebration', $item->id)->delete();
+
+        // Gera novas
+        $command = new GenerateCelebrationOccurrences();
+        $command->generateFor($item);
 
         return response()->json(['message' => 'Celebração atualizada com sucesso.']);
     }
