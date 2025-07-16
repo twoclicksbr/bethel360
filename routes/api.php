@@ -7,12 +7,17 @@ use App\Http\Controllers\Api\Admin\DocumentController;
 use App\Http\Controllers\Api\Admin\FileController;
 use App\Http\Controllers\Api\Admin\MinistryCampusController;
 use App\Http\Controllers\Api\Admin\MinistryController;
+use App\Http\Controllers\Api\Admin\MinistryLeaderController;
 use App\Http\Controllers\Api\Admin\NoteController;
 use App\Http\Controllers\Api\Admin\TypeAddressController;
 use App\Http\Controllers\Api\Admin\TypeContactController;
 use App\Http\Controllers\Api\Admin\TypeDocumentController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Admin\PersonController;
+use App\Http\Controllers\Api\Admin\ThemeCelebrationController;
+use App\Http\Controllers\Api\Admin\ThemeCelebrationMinistryController;
+use App\Http\Controllers\Api\Admin\ThemeCelebrationOccurrenceController;
+use App\Http\Controllers\Api\Admin\ThemeCelebrationParticipationController;
 use App\Http\Controllers\Api\Admin\ThemeMinistryController;
 use Illuminate\Support\Facades\Route;
 
@@ -160,6 +165,60 @@ Route::prefix('admin')->middleware(ApiAuthMiddleware::class)->group(function () 
         Route::post('/', [MinistryCampusController::class, 'store']);
         Route::delete('/{id}', [MinistryCampusController::class, 'destroy']);
     });
+
+    // MINISTRY LEADER
+    Route::prefix('ministry-leader')->group(function () {
+        Route::get('/', [MinistryLeaderController::class, 'index']);
+        Route::post('/', [MinistryLeaderController::class, 'store']);
+        Route::put('/{id}', [MinistryLeaderController::class, 'update']);
+        Route::delete('/{id}', [MinistryLeaderController::class, 'destroy']);
+        Route::get('/deleted', [MinistryLeaderController::class, 'deleted']);
+        Route::put('/restore/{id}', [MinistryLeaderController::class, 'restore']);
+    });
+
+    // THEME CELEBRATION
+    Route::prefix('theme-celebration')->group(function () {
+        Route::get('/', [ThemeCelebrationController::class, 'index']);
+        Route::post('/', [ThemeCelebrationController::class, 'store']);
+        Route::get('/{id}', [ThemeCelebrationController::class, 'show']);
+        Route::put('/{id}', [ThemeCelebrationController::class, 'update']);
+        Route::delete('/{id}', [ThemeCelebrationController::class, 'destroy']);
+        Route::get('/deleted', [ThemeCelebrationController::class, 'deleted']);
+        Route::put('/restore/{id}', [ThemeCelebrationController::class, 'restore']);
+    });
+
+    // THEME CELEBRATION OCCURRENCE
+    Route::prefix('theme-celebration-occurrence')->group(function () {
+        Route::get('/', [ThemeCelebrationOccurrenceController::class, 'index']);
+        Route::post('/', [ThemeCelebrationOccurrenceController::class, 'store']);
+        Route::get('/{id}', [ThemeCelebrationOccurrenceController::class, 'show']);
+        Route::put('/{id}', [ThemeCelebrationOccurrenceController::class, 'update']);
+        Route::delete('/{id}', [ThemeCelebrationOccurrenceController::class, 'destroy']);
+        Route::get('/deleted', [ThemeCelebrationOccurrenceController::class, 'deleted']);
+        Route::put('/restore/{id}', [ThemeCelebrationOccurrenceController::class, 'restore']);
+    });
+
+    // THEME CELEBRATION MINISTRY
+    Route::prefix('theme-celebration-ministry')->group(function () {
+        Route::get('/', [ThemeCelebrationMinistryController::class, 'index']);
+        Route::post('/', [ThemeCelebrationMinistryController::class, 'store']);
+        Route::delete('/{id}', [ThemeCelebrationMinistryController::class, 'destroy']);
+    });
+
+    // THEME CELEBRATION PARTICIPATION
+    Route::prefix('theme-celebration-participation')->group(function () {
+        Route::get('/', [ThemeCelebrationParticipationController::class, 'index']);
+        Route::post('/', [ThemeCelebrationParticipationController::class, 'store']);
+        Route::put('/{id}', [ThemeCelebrationParticipationController::class, 'update']);
+        Route::delete('/{id}', [ThemeCelebrationParticipationController::class, 'destroy']);
+        Route::get('/deleted', [ThemeCelebrationParticipationController::class, 'deleted']);
+        Route::put('/restore/{id}', [ThemeCelebrationParticipationController::class, 'restore']);
+    });
+
+
+
+
+
 
 
 
