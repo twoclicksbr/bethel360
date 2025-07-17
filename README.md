@@ -64,6 +64,7 @@ theme_group_attendance/          – presença nos encontros
 theme_group_material/            – materiais do grupo
 
 
+
 ---
 
 ## 🧪 Como rodar localmente
