@@ -18,7 +18,13 @@ use App\Http\Controllers\Api\Admin\ThemeCelebrationController;
 use App\Http\Controllers\Api\Admin\ThemeCelebrationMinistryController;
 use App\Http\Controllers\Api\Admin\ThemeCelebrationOccurrenceController;
 use App\Http\Controllers\Api\Admin\ThemeCelebrationParticipationController;
+use App\Http\Controllers\Api\Admin\ThemeGroupAttendanceController;
+use App\Http\Controllers\Api\Admin\ThemeGroupController;
+use App\Http\Controllers\Api\Admin\ThemeGroupLessonController;
+use App\Http\Controllers\Api\Admin\ThemeGroupMaterialController;
+use App\Http\Controllers\Api\Admin\ThemeGroupPersonController;
 use App\Http\Controllers\Api\Admin\ThemeMinistryController;
+use App\Http\Controllers\Api\Admin\TypeGroupController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\ApiAuthMiddleware;
@@ -215,9 +221,65 @@ Route::prefix('admin')->middleware(ApiAuthMiddleware::class)->group(function () 
         Route::put('/restore/{id}', [ThemeCelebrationParticipationController::class, 'restore']);
     });
 
+    // THEME GROUP
+    Route::prefix('theme-group')->group(function () {
+        Route::get('/', [ThemeGroupController::class, 'index']);
+        Route::post('/', [ThemeGroupController::class, 'store']);
+        Route::put('/{id}', [ThemeGroupController::class, 'update']);
+        Route::delete('/{id}', [ThemeGroupController::class, 'destroy']);
+        Route::get('/deleted', [ThemeGroupController::class, 'deleted']);
+        Route::put('/restore/{id}', [ThemeGroupController::class, 'restore']);
+    });
 
+    // TYPE GROUP
+    Route::prefix('type-group')->group(function () {
+        Route::get('/', [TypeGroupController::class, 'index']);
+        Route::post('/', [TypeGroupController::class, 'store']);
+        Route::put('/{id}', [TypeGroupController::class, 'update']);
+        Route::delete('/{id}', [TypeGroupController::class, 'destroy']);
+        Route::get('/deleted', [TypeGroupController::class, 'deleted']);
+        Route::put('/restore/{id}', [TypeGroupController::class, 'restore']);
+    });
 
+    // THEME GROUP PERSON
+    Route::prefix('theme-group-person')->group(function () {
+        Route::get('/', [ThemeGroupPersonController::class, 'index']);
+        Route::post('/', [ThemeGroupPersonController::class, 'store']);
+        Route::put('/{id}', [ThemeGroupPersonController::class, 'update']);
+        Route::delete('/{id}', [ThemeGroupPersonController::class, 'destroy']);
+        Route::get('/deleted', [ThemeGroupPersonController::class, 'deleted']);
+        Route::put('/restore/{id}', [ThemeGroupPersonController::class, 'restore']);
+    });
 
+    // THEME GROUP LESSON
+    Route::prefix('theme-group-lesson')->group(function () {
+        Route::get('/', [ThemeGroupLessonController::class, 'index']);
+        Route::post('/', [ThemeGroupLessonController::class, 'store']);
+        Route::put('/{id}', [ThemeGroupLessonController::class, 'update']);
+        Route::delete('/{id}', [ThemeGroupLessonController::class, 'destroy']);
+        Route::get('/deleted', [ThemeGroupLessonController::class, 'deleted']);
+        Route::put('/restore/{id}', [ThemeGroupLessonController::class, 'restore']);
+    });
+
+    // THEME GROUP ATTENDANCE
+    Route::prefix('theme-group-attendance')->group(function () {
+        Route::get('/', [ThemeGroupAttendanceController::class, 'index']);
+        Route::post('/', [ThemeGroupAttendanceController::class, 'store']);
+        Route::put('/{id}', [ThemeGroupAttendanceController::class, 'update']);
+        Route::delete('/{id}', [ThemeGroupAttendanceController::class, 'destroy']);
+        Route::get('/deleted', [ThemeGroupAttendanceController::class, 'deleted']);
+        Route::put('/restore/{id}', [ThemeGroupAttendanceController::class, 'restore']);
+    });
+
+    // THEME GROUP MATERIAL
+    Route::prefix('theme-group-material')->group(function () {
+        Route::get('/', [ThemeGroupMaterialController::class, 'index']);
+        Route::post('/', [ThemeGroupMaterialController::class, 'store']);
+        Route::put('/{id}', [ThemeGroupMaterialController::class, 'update']);
+        Route::delete('/{id}', [ThemeGroupMaterialController::class, 'destroy']);
+        Route::get('/deleted', [ThemeGroupMaterialController::class, 'deleted']);
+        Route::put('/restore/{id}', [ThemeGroupMaterialController::class, 'restore']);
+    });
 
 
 
