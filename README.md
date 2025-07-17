@@ -43,25 +43,25 @@ Centralizar toda a gestão e operação das atividades da igreja em um só siste
 
 ## 🧱 Estrutura de módulos
 
-credential/                      - credenciais (igrejas)
-campus/                          – unidades físicas
-person/                          – cadastro de pessoas
-person_user/                     – usuário e login
-token/                           – controle de sessão
-ministry/                        – ministérios
-theme_ministry/                  – templates como celebration, kids etc.
+credential/ - credenciais (igrejas)
+campus/ - unidades físicas
+person/ - cadastro de pessoas
+person_user/ - usuário e login
+token/ - controle de sessão
+ministry/ - ministérios
+theme_ministry/ - templates como celebration, kids etc.
 
-theme_celebration/               – cultos fixos
-theme_celebration_occurrence/    – ocorrências semanais
-theme_celebration_ministry/      – ministérios escalados
-theme_celebration_participation/ – escala de voluntários
+theme_celebration/ - cultos fixos
+theme_celebration_occurrence/ - ocorrências semanais
+theme_celebration_ministry/ - ministérios escalados
+theme_celebration_participation/ - escala de voluntários
 
-theme_group/                     – grupos (células, discipulados, mentorias etc.)
-type_group/                      – tipos de grupo
-theme_group_person/              – participantes do grupo
-theme_group_lesson/              – encontros/aulas do grupo
-theme_group_attendance/          – presença nos encontros
-theme_group_material/            – materiais do grupo
+theme_group/ - grupos (células, discipulados, mentorias etc.)
+type_group/ - tipos de grupo
+theme_group_person/ - participantes do grupo
+theme_group_lesson/ - encontros/aulas do grupo
+theme_group_attendance/ - presença nos encontros
+theme_group_material/ - materiais do grupo
 
 
 
