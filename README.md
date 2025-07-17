@@ -43,7 +43,8 @@ Centralizar toda a gestão e operação das atividades da igreja em um só siste
 
 ## 🧱 Estrutura de módulos
 
-credential/                      – credenciais (igrejas)```
+credential/                      - credenciais (igrejas)
+
 campus/                          – unidades físicas
 person/                          – cadastro de pessoas
 person_user/                     – usuário e login
