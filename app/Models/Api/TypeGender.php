@@ -4,15 +4,13 @@ namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Person extends Model
+class TypeGender extends Model
 {
-    protected $table = 'person';
+    protected $table = 'type_gender';
 
     protected $fillable = [
         'id_credential',
-        'id_gender',
         'name',
-        'birthdate',
         'active',
         'deleted',
     ];
@@ -20,10 +18,5 @@ class Person extends Model
     public function credential()
     {
         return $this->belongsTo(Credential::class, 'id_credential');
-    }
-
-    public function gender()
-    {
-        return $this->belongsTo(TypeGender::class, 'id_gender');
     }
 }

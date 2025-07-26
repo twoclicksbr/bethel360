@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Front\Auth\LoginRequest;
 
+use Illuminate\Http\Request;
+
 class LoginController extends Controller
 {
     public function showForm()
@@ -36,14 +38,27 @@ class LoginController extends Controller
         $data = $response->json();
 
         session([
-            'auth_token'          => $data['authToken'],
+            'authToken'           => $data['authToken'],
             'authIdCredential'    => $data['authIdCredential'],
             'authIdPerson'        => $data['authIdPerson'],
             'authNamePerson'      => $data['authNamePerson'],
             'authNameFirst'       => $data['authNameFirst'],
+            'authIdGender'        => $data['authIdGender'],
+            'authNameGender'      => $data['authNameGender'],
             'authEmailPersonUser' => $data['authEmailPersonUser'],
         ]);
 
         return redirect('/admin/dashboard');
+    }
+
+    public function logout(Request $request)
+    {
+        session()->flush();
+
+        return redirect('/auth/login')->with([
+            'logout' => false,
+            'error_title' => 'Logout realizado',
+            'error_message' => 'Você saiu do sistema com sucesso.',
+        ]);
     }
 }

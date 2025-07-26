@@ -70,12 +70,14 @@ class AuthController extends Controller
 
         // 6. Resposta
         return response()->json([
-            'authIdCredential' => $personUser->id_credential,
-            'authIdPerson' => $personUser->id_person,
-            'authNamePerson' => $personUser->person->name ?? '',
-            'authNameFirst' => strtok($personUser->person->name ?? '', ' '),
-            'authEmailPersonUser' => $personUser->email,
-            'authToken' => $token->token,
+            'authIdCredential'       => $personUser->id_credential,
+            'authIdPerson'           => $personUser->id_person,
+            'authNamePerson'         => $personUser->person->name ?? '',
+            'authNameFirst'          => strtok($personUser->person->name ?? '', ' '),
+            'authEmailPersonUser'    => $personUser->email,
+            'authIdGender'           => $personUser->person->id_gender ?? null,
+            'authNameGender'         => $personUser->person->gender->name ?? null,
+            'authToken'              => $token->token,
         ]);
     }
 

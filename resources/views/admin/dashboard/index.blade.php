@@ -9,7 +9,7 @@
 @endphp
 
 @section('content')
-    <div id="kt_app_content" class="app-content flex-column-fluid">
+    <div id="kt_app_content" class="flex-column-fluid">
         <!--begin::Row-->
         <div class="row g-5 g-xl-8">
             <!--begin::Col-->
@@ -19,10 +19,10 @@
                     <!--begin::Col-->
                     <div class="col-6">
                         <!--begin::Card-->
-                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-primary p-10"
+                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-danger p-10"
                             href="account/overview.html">
                             <i class="ki-outline ki-gift fs-2tx mb-5 ms-n1 text-gray-500"></i>
-                            <span class="fs-4 fw-bold">User Profile</span>
+                            <span class="fs-4 fw-bold">Central de Vidas</span>
                         </a>
                         <!--end::Card-->
                     </div>
@@ -30,10 +30,10 @@
                     <!--begin::Col-->
                     <div class="col-6">
                         <!--begin::Card-->
-                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-primary p-10"
+                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-danger p-10"
                             href="account/statements.html">
                             <i class="ki-outline ki-technology-2 fs-2tx mb-5 ms-n1 text-gray-500"></i>
-                            <span class="fs-4 fw-bold">Statements</span>
+                            <span class="fs-4 fw-bold">Agenda Viva</span>
                         </a>
                         <!--end::Card-->
                     </div>
@@ -41,10 +41,10 @@
                     <!--begin::Col-->
                     <div class="col-6">
                         <!--begin::Card-->
-                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-primary p-10"
+                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-danger p-10"
                             href="account/referrals.html">
                             <i class="ki-outline ki-fingerprint-scanning fs-2tx mb-5 ms-n1 text-gray-500"></i>
-                            <span class="fs-4 fw-bold">Best Referrals</span>
+                            <span class="fs-4 fw-bold">Crescer+</span>
                         </a>
                         <!--end::Card-->
                     </div>
@@ -52,10 +52,10 @@
                     <!--begin::Col-->
                     <div class="col-6">
                         <!--begin::Card-->
-                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-primary p-10"
+                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-danger p-10"
                             href="apps/customers/view.html">
                             <i class="ki-outline ki-abstract-26 fs-2tx mb-5 ms-n1 text-gray-500"></i>
-                            <span class="fs-4 fw-bold">Hot Picks</span>
+                            <span class="fs-4 fw-bold">Caminhada</span>
                         </a>
                         <!--end::Card-->
                     </div>
@@ -63,10 +63,10 @@
                     <!--begin::Col-->
                     <div class="col-6">
                         <!--begin::Card-->
-                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-primary p-10"
+                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-danger p-10"
                             href="apps/projects/project.html">
                             <i class="ki-outline ki-basket fs-2tx mb-5 ms-n1 text-gray-500"></i>
-                            <span class="fs-4 fw-bold">Latest Trands</span>
+                            <span class="fs-4 fw-bold">Gestão do Reino</span>
                         </a>
                         <!--end::Card-->
                     </div>
@@ -74,10 +74,10 @@
                     <!--begin::Col-->
                     <div class="col-6">
                         <!--begin::Card-->
-                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-primary p-10"
+                        <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-danger p-10"
                             href="apps/projects/users.html">
                             <i class="ki-outline ki-rocket fs-2tx mb-5 ms-n1 text-gray-500"></i>
-                            <span class="fs-4 fw-bold">New Arrivals</span>
+                            <span class="fs-4 fw-bold">Igreja Kids</span>
                         </a>
                         <!--end::Card-->
                     </div>

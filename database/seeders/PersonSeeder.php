@@ -23,6 +23,7 @@ class PersonSeeder extends Seeder
                 ],
                 [
                     'birthdate' => $birth,
+                    'id_gender' => 1,
                     'active' => true,
                     'deleted' => false,
                 ]

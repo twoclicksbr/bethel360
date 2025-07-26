@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Api\Person;
 use Illuminate\Support\Facades\Log;
 
+use App\Http\Requests\Api\PersonRequest;
+
+
 class PersonController extends Controller
 {
     // Lista todas as pessoas da credencial logada
@@ -16,7 +19,8 @@ class PersonController extends Controller
 
         $idCredential = authIdCredential();
 
-        $query = Person::where('id_credential', $idCredential)
+        $query = Person::with('gender')
+            ->where('id_credential', $idCredential)
             ->where('deleted', 0);
 
         // Filtros por campo
@@ -77,28 +81,24 @@ class PersonController extends Controller
             ], 404);
         }
 
-        return response()->json($pessoas);
+        return response()->json([
+            'status' => true,
+            'data' => $pessoas->count() === 1 ? $pessoas->first() : $pessoas
+        ]);
     }
 
     // Cria uma nova pessoa vinculada à credencial logada
-    public function store(Request $request)
+    public function store(PersonRequest $request)
     {
-        // dd('ENTROU NO STORE');
-
-        $idCredential = authIdCredential();
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'birthdate' => 'required|date',
-            'active' => 'nullable|boolean'
-        ]);
+        $idCredential = $request->get('authIdCredential');
 
         $pessoa = new Person();
-        $pessoa->id_credential = $idCredential;
-        $pessoa->name = $request->name;
-        $pessoa->birthdate = $request->birthdate;
-        $pessoa->active = $request->active ?? 1;
-        $pessoa->deleted = 0;
+        $pessoa->id_credential = $request->get('authIdCredential');
+        $pessoa->id_gender     = $request->id_gender;
+        $pessoa->name          = $request->name;
+        $pessoa->birthdate     = $request->birthdate;
+        $pessoa->active        = $request->active ?? 1;
+        $pessoa->deleted       = 0;
         $pessoa->save();
 
         return response()->json([
@@ -107,9 +107,8 @@ class PersonController extends Controller
         ], 201);
     }
 
-
     // Atualiza os dados de uma pessoa da credencial logada
-    public function update(Request $request, $id)
+    public function update(PersonRequest $request, $id)
     {
         $idCredential = authIdCredential();
 
@@ -125,22 +124,16 @@ class PersonController extends Controller
             ], 404);
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'birthdate' => 'required|date',
-            'active' => 'nullable|boolean',
-        ], [], [
-            'name' => 'Nome',
-            'birthdate' => 'Data de nascimento',
-            'active' => 'Ativo',
-        ]);
-
-        $pessoa->name = $validated['name'];
-        $pessoa->birthdate = $validated['birthdate'];
-        $pessoa->active = $validated['active'] ?? $pessoa->active;
+        $pessoa->id_gender = $request->id_gender ?? $pessoa->id_gender;
+        $pessoa->name      = $request->name;
+        $pessoa->birthdate = $request->birthdate;
+        $pessoa->active    = $request->active ?? $pessoa->active;
         $pessoa->save();
 
-        return response()->json(['message' => 'Pessoa atualizada com sucesso.']);
+        return response()->json([
+            'status' => true,
+            'message' => 'Pessoa atualizada com sucesso.'
+        ]);
     }
 
     // Exclusão lógica da pessoa
@@ -173,7 +166,8 @@ class PersonController extends Controller
     {
         $idCredential = authIdCredential();
 
-        $query = Person::where('id_credential', $idCredential)
+        $query = Person::with('gender')
+            ->where('id_credential', $idCredential)
             ->where('deleted', 1);
 
         // Filtros opcionais

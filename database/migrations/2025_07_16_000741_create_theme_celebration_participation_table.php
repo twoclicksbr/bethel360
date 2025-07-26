@@ -25,7 +25,10 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('id_credential')->references('id')->on('credential');
-            $table->foreign('id_theme_celebration_occurrence')->references('id')->on('theme_celebration_occurrence');
+            $table->foreign('id_theme_celebration_occurrence', 'fk_participation_occurrence')
+                ->references('id')
+                ->on('theme_celebration_occurrence');
+
             $table->foreign('id_ministry')->references('id')->on('ministry');
             $table->foreign('id_person')->references('id')->on('person');
         });

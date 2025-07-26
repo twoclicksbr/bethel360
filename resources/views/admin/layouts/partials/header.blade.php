@@ -13,7 +13,7 @@
         <!--end::Header mobile toggle-->
         <!--begin::Logo-->
         <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0 me-lg-18">
-            <a href="index.html">
+            <a href="{{ route('dashboard') }}">
                 <img alt="Logo" src="{{ asset('assets/media/logos/logo-s-red.svg') }}" class="h-25px d-sm-none" />
                 <img alt="Logo" src="{{ asset('assets/media/logos/logo-h-white-red.svg') }}"
                     class="h-40px d-none d-sm-block" />
@@ -3625,11 +3625,22 @@
                                 <!--end::Avatar-->
                                 <!--begin::Username-->
                                 <div class="d-flex flex-column">
-                                    <div class="fw-bold d-flex align-items-center fs-5">Max Smith
-                                        <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">Pro</span>
+                                    <div class="fw-bold d-flex align-items-center fs-5">
+                                        {{ session('authNameFirst') }}
+
+                                        @php
+                                            $genderColor = match (session('authIdGender')) {
+                                                1 => 'primary',
+                                                2 => 'danger',
+                                                default => 'info',
+                                            };
+                                        @endphp
+
+                                        <span
+                                            class="badge badge-light-{{ $genderColor }} fw-bold fs-8 px-2 py-1 ms-2">{{ session('authNameGender') }}</span>
                                     </div>
                                     <a href="#"
-                                        class="fw-semibold text-muted text-hover-primary fs-7">max@kt.com</a>
+                                        class="fw-semibold text-muted text-hover-primary fs-7">{{ session('authEmailPersonUser') }}</a>
                                 </div>
                                 <!--end::Username-->
                             </div>
@@ -3640,7 +3651,7 @@
                         <!--end::Menu separator-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5">
-                            <a href="account/overview.html" class="menu-link px-5">My Profile</a>
+                            <a href="account/overview.html" class="menu-link px-5">Meu Perfil</a>
                         </div>
                         <!--end::Menu item-->
                         <!--begin::Menu item-->
@@ -3835,8 +3846,7 @@
                         <!--end::Menu item-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5">
-                            <a href="authentication/layouts/corporate/sign-in.html" class="menu-link px-5">Sign
-                                Out</a>
+                            <a href="{{ url('/logout') }}" class="menu-link px-5">Sair</a>
                         </div>
                         <!--end::Menu item-->
                     </div>

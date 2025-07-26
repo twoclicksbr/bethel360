@@ -20,9 +20,17 @@ return new class extends Migration
             $table->boolean('deleted')->default(0);
             $table->timestamps();
 
-            $table->foreign('id_credential')->references('id')->on('credential');
-            $table->foreign('id_type_group')->references('id')->on('type_group');
-            $table->foreign('id_leader')->references('id')->on('person');
+            $table->foreign('id_credential', 'fk_theme_group_credential')
+                ->references('id')
+                ->on('credential');
+
+            $table->foreign('id_type_group', 'fk_theme_group_type_group')
+                ->references('id')
+                ->on('type_theme_group');
+
+            $table->foreign('id_leader', 'fk_theme_group_leader')
+                ->references('id')
+                ->on('person');
         });
     }
 

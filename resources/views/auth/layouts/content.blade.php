@@ -33,6 +33,74 @@
                         <div class="text-gray-500 fw-semibold fs-6">Faça login no Bethel360°</div>
                     </div>
 
+                    {{-- <pre>{{ print_r(session()->all(), true) }}</pre> --}}
+
+                    {{-- {{ print_r(session()->all(), true) }} --}}
+
+
+                    @if ($errors->has('email'))
+                        <div
+                            class="alert alert-dismissible bg-light-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10">
+                            <i class="ki-duotone ki-message-text-2 fs-2hx text-danger me-4 mb-5 mb-sm-0"><span
+                                    class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+
+                            <div class="d-flex flex-column pe-0 pe-sm-10">
+                                <h4 class="fw-semibold">Erro ao fazer login</h4>
+                                <span>
+                                    {{ $errors->first('email') }}
+                                </span>
+                            </div>
+
+                            <button type="button"
+                                class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto"
+                                data-bs-dismiss="alert">
+                                <i class="ki-duotone ki-cross fs-1 text-danger"><span class="path1"></span><span
+                                        class="path2"></span></i> </button>
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div
+                            class="alert alert-dismissible bg-light-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10">
+                            <i class="ki-duotone ki-message-text-2 fs-2hx text-danger me-4 mb-5 mb-sm-0"><span
+                                    class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+
+                            <div class="d-flex flex-column pe-0 pe-sm-10">
+                                <h4 class="fw-semibold">{{ session('error_title') }}</h4>
+                                <span>
+                                    {{ session('error_message') }}
+                                </span>
+                            </div>
+
+                            <button type="button"
+                                class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto"
+                                data-bs-dismiss="alert">
+                                <i class="ki-duotone ki-cross fs-1 text-danger"><span class="path1"></span><span
+                                        class="path2"></span></i> </button>
+                        </div>
+                    @endif
+
+                    @if (session('logout') !== null)
+                        <div
+                            class="alert alert-dismissible bg-light-success d-flex flex-column flex-sm-row w-100 p-5 mb-10">
+                            <i class="ki-duotone ki-notification-bing fs-2hx text-success me-4 mb-5 mb-sm-0"><span
+                                    class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+
+                            <div class="d-flex flex-column pe-0 pe-sm-10">
+                                <h4 class="fw-semibold">{{ session('error_title') }}</h4>
+                                <span>
+                                    {{ session('error_message') }}
+                                </span>
+                            </div>
+
+                            <button type="button"
+                                class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto"
+                                data-bs-dismiss="alert">
+                                <i class="ki-duotone ki-cross fs-1 text-success"><span class="path1"></span><span
+                                        class="path2"></span></i> </button>
+                        </div>
+                    @endif
+
                     {{-- <div class="row g-3 mb-9">
                         <div class="col-md-6">
                             <a href="#" class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
@@ -54,14 +122,26 @@
                     </div> --}}
 
                     <div class="fv-row mb-8">
-                        <input type="text" name="email" placeholder="Email" autocomplete="off"
-                            class="form-control bg-transparent" />
+                        <input type="text" name="email" placeholder="Email" autocomplete="off" autofocus="on"
+                            class="form-control bg-transparent" value="" />
                     </div>
 
                     <div class="fv-row mb-3">
-                        <input type="password" name="password" placeholder="Senha" autocomplete="off"
-                            class="form-control bg-transparent" />
+                        {{-- <input type="password" name="password" placeholder="Senha" autocomplete="off"
+                            class="form-control bg-transparent" /> --}}
+
+                        <div class="position-relative mb-3">
+                            <input id="password"  class="form-control bg-transparent" type="password" placeholder="Senha"
+                                name="password" autocomplete="off" />
+                            <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
+                                data-kt-password-meter-control="visibility" onclick="togglePassword()">
+                                <i class="ki-outline ki-eye-slash fs-2"></i>
+                                <i class="ki-outline ki-eye fs-2 d-none"></i>
+                            </span>
+                        </div>
                     </div>
+
+
 
                     <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
                         <div></div>
