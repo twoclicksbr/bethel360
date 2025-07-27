@@ -5,5 +5,6 @@
 @endphp
 
 <span class="text-muted mt-1 fw-semibold fs-7">
-    Exibindo {{ $from }}–{{ $to }} de {{ $total }} registros cadastradas
+    Encontramos: <b>{{ $total }}</b> registros
+    {{-- Exibindo {{ $from }}–{{ $to }} de {{ $total }} registros cadastradas --}}
 </span>

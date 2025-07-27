@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Api\Person;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+
 
 use App\Http\Requests\Api\PersonRequest;
 
@@ -15,38 +20,100 @@ class PersonController extends Controller
     // Lista todas as pessoas da credencial logada
     public function index(Request $request)
     {
-        // dd('ENTROU NO INDEX');
-
         $idCredential = authIdCredential();
 
         $query = Person::with('gender')
             ->where('id_credential', $idCredential)
             ->where('deleted', 0);
 
-        // Filtros por campo
-        if ($request->filled('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
+        // 🔍 Filtros
+        if ($request->filled('search_id')) {
+            $value = $request->search_id;
+
+            if (Str::contains($value, '-')) {
+                [$start, $end] = explode('-', $value);
+                $query->whereBetween('id', [(int) trim($start), (int) trim($end)]);
+            } elseif (Str::contains($value, ',')) {
+                $ids = array_map('intval', explode(',', $value));
+                $query->whereIn('id', $ids);
+            } else {
+                $query->where('id', (int) $value);
+            }
+        }
+
+        if ($request->filled('search_name')) {
+            $query->where('name', 'like', '%' . $request->search_name . '%');
+        }
+
+        if ($request->filled('search_active')) {
+            $query->where('active', $request->search_active);
+        }
+
+        if ($request->filled('id_gender')) {
+            $query->where('id_gender', $request->id_gender);
         }
 
         if ($request->filled('birthdate')) {
-            $query->whereDate('birthdate', $request->birthdate);
+            $today = now();
+            if ($request->birthdate === 'day') {
+                $query->whereDay('birthdate', $today->day)
+                    ->whereMonth('birthdate', $today->month);
+            } elseif ($request->birthdate === 'week') {
+                $query->whereBetween(DB::raw('DATE_FORMAT(birthdate, "%m-%d")'), [
+                    $today->copy()->startOfWeek()->format('m-d'),
+                    $today->copy()->endOfWeek()->format('m-d'),
+                ]);
+            } elseif ($request->birthdate === 'month') {
+                $query->whereMonth('birthdate', $today->month);
+            }
         }
 
-        if ($request->filled('active')) {
-            $query->where('active', $request->active);
+        if ($request->filled('search_date_type') && $request->filled('search_date_range')) {
+            $dates = explode(' a ', $request->search_date_range);
+
+            try {
+                $start = \Carbon\Carbon::parse(trim($dates[0]))->startOfDay();
+                $end = isset($dates[1])
+                    ? \Carbon\Carbon::parse(trim($dates[1]))->endOfDay()
+                    : \Carbon\Carbon::parse(trim($dates[0]))->endOfDay();
+
+                $query->whereBetween($request->search_date_type, [$start, $end]);
+            } catch (\Exception $e) {
+                // ignora filtro inválido
+            }
         }
 
-        // Ordenação
-        $sort = $request->get('sort', 'id');
-        $direction = $request->get('direction', 'desc');
-        $query->orderBy($sort, $direction);
+        // 🔁 Paginação
+        $perPage = $request->paginate === 'all' ? 999999 : ($request->paginate ?? 10);
+        $paginator = $query->orderBy('name')->paginate($perPage)->appends($request->query());
 
-        // Paginação
-        $perPage = $request->get('per_page', 10);
+        // 🔄 Formata os dados e mantém paginação
+        $mappedData = $paginator->getCollection()->map(function ($person) {
+            return [
+                'id' => $person->id,
+                'name' => $person->name,
+                'birthdate' => $person->birthdate,
+                'active' => $person->active,
+                'id_gender' => $person->id_gender,
+                'gender' => $person->gender,
+                'created_at' => $person->getRawOriginal('created_at'),
+                'updated_at' => $person->getRawOriginal('updated_at'),
+            ];
+        });
+
+        // 🔁 Cria novo paginator com os dados mapeados
+        $paginated = new LengthAwarePaginator(
+            $mappedData,
+            $paginator->total(),
+            $paginator->perPage(),
+            $paginator->currentPage(),
+            ['path' => request()->url(), 'query' => $request->query()]
+        );
+
         return response()->json([
-            'data' => $query->paginate($perPage),
-            'sort' => $sort,
-            'direction' => $direction,
+            'status' => true,
+            'message' => 'Listagem de pessoas',
+            'data' => $paginated,
         ]);
     }
 

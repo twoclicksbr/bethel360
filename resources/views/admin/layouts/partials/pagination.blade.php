@@ -7,8 +7,13 @@
                 @foreach ($pagination['links'] as $link)
                     @php
                         $page = $link['url'] ? Str::after($link['url'], 'page=') : null;
-                        $url = $page ? url()->current() . '?page=' . $page : null;
-                        $label = str_replace(['pagination.previous', 'pagination.next'], ['&laquo;', '&raquo;'], $link['label']);
+                        $queryString = http_build_query(array_merge(request()->query(), ['page' => $page]));
+                        $url = $page ? url()->current() . '?' . $queryString : null;
+                        $label = str_replace(
+                            ['pagination.previous', 'pagination.next'],
+                            ['&laquo;', '&raquo;'],
+                            $link['label'],
+                        );
                     @endphp
                     <li class="page-item {{ $link['active'] ? 'active' : '' }} {{ !$url ? 'disabled' : '' }}">
                         <a class="page-link" href="{{ $url ?? '#' }}">
