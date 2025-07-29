@@ -10,26 +10,6 @@ use Illuminate\Support\Facades\Http;
 
 class PersonController extends Controller
 {
-    // public function index(Request $request)
-    // {
-    //     $token = session('authToken');
-
-    //     $response = Http::withHeaders([
-    //         'token' => $token,
-    //     ])->get(env('APP_URL_API') . '/admin/person?page=' . $request->get('page', 1));
-
-    //     // dd($response->json());
-
-    //     $json = $response->json();
-
-    //     $pagination = $json['data'] ?? [];
-    //     $people     = $pagination['data'] ?? [];
-
-    //     return view('admin.person.index', compact('people', 'pagination'));
-    // }
-
-
-
     public function index(Request $request)
     {
         $token = session('authToken');
