@@ -34,7 +34,13 @@ class PersonController extends Controller
     {
         $token = session('authToken');
 
-        $query = $request->query(); // todos os filtros, inclusive page
+        // Captura todos os filtros
+        $query = $request->query();
+
+        // Garante que sort e direction tenham valor padrão se não vierem na URL
+        $query['sort'] = $request->get('sort', 'name');
+        $query['direction'] = $request->get('direction', 'asc');
+
         $response = Http::withHeaders([
             'token' => $token,
         ])->get(env('APP_URL_API') . '/admin/person', $query);
@@ -56,6 +62,7 @@ class PersonController extends Controller
 
         return view('admin.person.index', compact('people', 'pagination', 'genders'));
     }
+
 
 
 

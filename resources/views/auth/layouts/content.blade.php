@@ -123,7 +123,7 @@
 
                     <div class="fv-row mb-8">
                         <input type="text" name="email" placeholder="Email" autocomplete="off" autofocus="on"
-                            class="form-control bg-transparent" value="" />
+                            class="form-control bg-transparent" value="alex@twoclicks.com" />
                     </div>
 
                     <div class="fv-row mb-3">
@@ -132,7 +132,7 @@
 
                         <div class="position-relative mb-3">
                             <input id="password"  class="form-control bg-transparent" type="password" placeholder="Senha"
-                                name="password" autocomplete="off" />
+                                name="password" autocomplete="off" value="123456" />
                             <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
                                 data-kt-password-meter-control="visibility" onclick="togglePassword()">
                                 <i class="ki-outline ki-eye-slash fs-2"></i>

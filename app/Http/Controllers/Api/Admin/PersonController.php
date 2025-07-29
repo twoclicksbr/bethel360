@@ -83,9 +83,16 @@ class PersonController extends Controller
             }
         }
 
+        // 🔃 Ordenação dinâmica
+        $allowedSorts = ['id', 'name', 'birthdate', 'id_gender', 'active', 'created_at'];
+        $sort = in_array($request->get('sort'), $allowedSorts) ? $request->get('sort') : 'name';
+        $direction = $request->get('direction') === 'desc' ? 'desc' : 'asc';
+
         // 🔁 Paginação
         $perPage = $request->paginate === 'all' ? 999999 : ($request->paginate ?? 10);
-        $paginator = $query->orderBy('name')->paginate($perPage)->appends($request->query());
+        $paginator = $query->orderBy($sort, $direction)
+            ->paginate($perPage)
+            ->appends($request->query());
 
         // 🔄 Formata os dados e mantém paginação
         $mappedData = $paginator->getCollection()->map(function ($person) {

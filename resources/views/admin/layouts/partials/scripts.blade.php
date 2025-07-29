@@ -51,26 +51,30 @@
     });
 </script>
 
-{{-- localStorage  --}}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const path = window.location.pathname;
+        const pathKey = path.replaceAll('/', '_');
+        const stateKey = 'searchPanelState_' + path;
+        const urlKey = 'grid_full_url_' + pathKey;
+        const exceptPaths = ['/admin', '/admin/dashboard']; // ⛔ páginas que NÃO devem restaurar localStorage
+
         const searchPanel = document.getElementById('searchPanel');
         const btnToggle = document.getElementById('btn-toggle-search');
-        const form = searchPanel?.querySelector('form');
+        const btnClose = document.getElementById('btn-close-search');
+        const btnClear = document.getElementById('btn-clear');
+        const form = document.getElementById('searchForm');
         const btnSearch = form?.querySelector('button[type="submit"]');
 
-        const pageKey = window.location.pathname;
-        const stateKey = 'searchPanelState_' + pageKey;
-        const formKey = 'searchPanelForm_' + pageKey;
+        const url = new URL(window.location.href);
+        const hasParams = url.search.length > 0;
 
-        // Aplica estado salvo (painel aberto)
+        // 🔁 Aplica estado salvo (painel aberto/fechado)
         if (localStorage.getItem(stateKey) === 'show') {
-            new bootstrap.Collapse(searchPanel, {
-                toggle: false
-            }).show();
+            new bootstrap.Collapse(searchPanel, { toggle: false }).show();
         }
 
-        // Botão abre/fecha → salva estado
+        // 🟢 Botão abrir/fechar painel
         btnToggle?.addEventListener('click', () => {
             setTimeout(() => {
                 const isVisible = searchPanel.classList.contains('show');
@@ -78,67 +82,63 @@
             }, 200);
         });
 
-        // Botão "Pesquisar" → salva campos e estado
-        btnSearch?.addEventListener('click', () => {
-            const data = {};
-            form.querySelectorAll('input, select').forEach(el => {
-                if (el.name) data[el.name] = $(el).val();
-            });
-            localStorage.setItem(formKey, JSON.stringify(data));
-
-            const isVisible = searchPanel.classList.contains('show');
-            localStorage.setItem(stateKey, isVisible ? 'show' : 'hide');
+        // 🟢 Botão fechar com "X"
+        btnClose?.addEventListener('click', () => {
+            const panel = bootstrap.Collapse.getOrCreateInstance(searchPanel);
+            panel.hide();
+            localStorage.setItem(stateKey, 'hide');
         });
 
-        // Restaura campos salvos
-        const savedData = localStorage.getItem(formKey);
-        if (savedData && form) {
-            const data = JSON.parse(savedData);
-            Object.entries(data).forEach(([name, value]) => {
-                const el = form.querySelector(`[name="${name}"]`);
-                if (el) {
-                    $(el).val(value).trigger('change');
+        // 🟢 Botão "Limpar"
+        btnClear?.addEventListener('click', () => {
+            form.querySelectorAll('input, select').forEach(el => {
+                if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                else el.value = '';
+            });
+            localStorage.removeItem(urlKey);
+            form.submit();
+        });
 
-                    if (name === 'search_date_range' && el._flatpickr) {
-                        el._flatpickr.setDate(value.split(' a '));
-                    }
+        // ✅ Salva URL completa ao enviar o form
+        form?.addEventListener('submit', () => {
+            const formUrl = new URL(window.location.origin + path);
+            form.querySelectorAll('input, select').forEach(el => {
+                const val = $(el).val();
+                if (el.name && val) {
+                    formUrl.searchParams.set(el.name, val);
                 }
             });
-
-            // ✅ Se URL está limpa, dispara submit automático
-            if (!window.location.search) {
-                form.submit();
-            }
-        }
-    });
-</script>
-
-
-
-
-{{-- btn fechar painel --}}
-<script>
-    document.getElementById('btn-close-search')?.addEventListener('click', () => {
-        const panel = bootstrap.Collapse.getOrCreateInstance(document.getElementById('searchPanel'));
-        panel.hide();
-        localStorage.setItem('searchPanelState_' + window.location.pathname, 'hide');
-    });
-</script>
-
-{{-- Limpar campos localStorage --}}
-<script>
-    document.getElementById('btn-clear')?.addEventListener('click', () => {
-        const form = document.getElementById('searchForm');
-        form.querySelectorAll('input, select').forEach(el => {
-            if (el.tagName === 'SELECT') el.selectedIndex = 0;
-            else el.value = '';
+            localStorage.setItem(urlKey, formUrl.toString());
         });
 
-        // Limpa localStorage
-        const pageKey = window.location.pathname;
-        localStorage.removeItem('searchPanelForm_' + pageKey);
+        // 🔁 Restaura URL salva, exceto se estiver nas páginas de exceção
+        if (!hasParams && !exceptPaths.includes(path)) {
+            const savedUrl = localStorage.getItem(urlKey);
+            if (savedUrl) {
+                window.location.href = savedUrl;
+                return;
+            }
+            url.searchParams.set('sort', 'name');
+            url.searchParams.set('direction', 'asc');
+            window.location.href = url.toString();
+        }
 
-        // Submete o form limpo
-        form.submit();
+        // 🟢 Links de ordenação
+        setTimeout(() => {
+            document.querySelectorAll('a[href*="sort="]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const url = new URL(link.href);
+
+                    if (url.pathname === path) {
+                        localStorage.setItem(urlKey, url.toString());
+                        window.location.href = url.toString();
+                    } else {
+                        window.location.href = url.toString();
+                    }
+                });
+            });
+        }, 300);
     });
 </script>
+

@@ -39,12 +39,17 @@
                     </div>
 
                     <form id="searchForm" method="GET">
+
+                        <input type="hidden" name="sort" value="{{ request('sort', 'name') }}">
+                        <input type="hidden" name="direction" value="{{ request('direction', 'asc') }}">
+
                         @include('admin.layouts.partials.filter-base')
                         @include('admin.person.partials.filter')
                         @include('admin.layouts.partials.filter-base-btn', [
                             'route_cancel' => route('person.index'),
                             'route_clear' => route('person.index'),
                         ])
+
                     </form>
                 </div>
             </div>
@@ -57,6 +62,8 @@
                     <!--begin::Table-->
                     <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                         <!--begin::Table head-->
+
+
                         <thead>
                             <tr class="fw-bold text-muted">
                                 <th class="w-25px">
@@ -65,15 +72,150 @@
                                             data-kt-check-target=".widget-9-check" />
                                     </div>
                                 </th>
-                                <th class="">Nome</th>
-                                <th class="" style="width: 10%">Data Nasc.</th>
 
-                                <th class="" style="width: 10%">Gênero</th>
-                                <th class="" style="width: 10%">Status</th>
-                                <th class="" style="width: 5%">Datas</th>
-                                <th class=" text-end" style="width: 5%">Ações</th>
+                                @php
+                                    $allParams = request()->all();
+
+                                    $idParams = array_merge($allParams, [
+                                        'sort' => 'id',
+                                        'direction' =>
+                                            request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc',
+                                    ]);
+
+                                    $nameParams = array_merge($allParams, [
+                                        'sort' => 'name',
+                                        'direction' =>
+                                            request('sort') === 'name' && request('direction') === 'asc'
+                                                ? 'desc'
+                                                : 'asc',
+                                    ]);
+
+                                    $birthdateParams = array_merge($allParams, [
+                                        'sort' => 'birthdate',
+                                        'direction' =>
+                                            request('sort') === 'birthdate' && request('direction') === 'asc'
+                                                ? 'desc'
+                                                : 'asc',
+                                    ]);
+
+                                    $genderParams = array_merge($allParams, [
+                                        'sort' => 'id_gender',
+                                        'direction' =>
+                                            request('sort') === 'id_gender' && request('direction') === 'asc'
+                                                ? 'desc'
+                                                : 'asc',
+                                    ]);
+
+                                    $statusParams = array_merge($allParams, [
+                                        'sort' => 'active',
+                                        'direction' =>
+                                            request('sort') === 'active' && request('direction') === 'asc'
+                                                ? 'desc'
+                                                : 'asc',
+                                    ]);
+
+                                    $createdParams = array_merge($allParams, [
+                                        'sort' => 'created_at',
+                                        'direction' =>
+                                            request('sort') === 'created_at' && request('direction') === 'asc'
+                                                ? 'desc'
+                                                : 'asc',
+                                    ]);
+                                @endphp
+
+                                <th>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a href="{{ route('person.index', $idParams) }}"
+                                            class="text-muted fs-7 d-flex align-items-center gap-1 {{ request('sort') === 'id' ? 'fw-bold' : '' }}">
+                                            ID
+                                            @if (request('sort') === 'id')
+                                                <i class="ki-duotone ki-double-{{ request('direction') === 'asc' ? 'up' : 'down' }} d-inline-block"
+                                                    style="font-size: 1rem;">
+                                                    <span class="path1"></span><span class="path2"></span><span
+                                                        class="path3"></span>
+                                                </i>
+                                            @endif
+                                        </a>
+
+                                        <span>|</span>
+
+                                        <a href="{{ route('person.index', $nameParams) }}"
+                                            class="text-muted fs-7 d-flex align-items-center gap-1 {{ request('sort') === 'name' ? 'fw-bold' : '' }}">
+                                            Nome
+                                            @if (request('sort') === 'name')
+                                                <i class="ki-duotone ki-double-{{ request('direction') === 'asc' ? 'up' : 'down' }} d-inline-block"
+                                                    style="font-size: 1rem;">
+                                                    <span class="path1"></span><span class="path2"></span><span
+                                                        class="path3"></span>
+                                                </i>
+                                            @endif
+                                        </a>
+                                    </div>
+                                </th>
+
+                                <th style="width: 10%">
+                                    <a href="{{ route('person.index', $birthdateParams) }}"
+                                        class="text-muted fs-7 d-flex align-items-center gap-1 {{ request('sort') === 'birthdate' ? 'fw-bold' : '' }}">
+                                        Data Nasc.
+                                        @if (request('sort') === 'birthdate')
+                                            <i class="ki-duotone ki-double-{{ request('direction') === 'asc' ? 'up' : 'down' }} d-inline-block"
+                                                style="font-size: 1rem;">
+                                                <span class="path1"></span><span class="path2"></span><span
+                                                    class="path3"></span>
+                                            </i>
+                                        @endif
+                                    </a>
+                                </th>
+
+                                <th style="width: 10%">
+                                    <a href="{{ route('person.index', $genderParams) }}"
+                                        class="text-muted fs-7 d-flex align-items-center gap-1 {{ request('sort') === 'id_gender' ? 'fw-bold' : '' }}">
+                                        Gênero
+                                        @if (request('sort') === 'id_gender')
+                                            <i class="ki-duotone ki-double-{{ request('direction') === 'asc' ? 'up' : 'down' }} d-inline-block"
+                                                style="font-size: 1rem;">
+                                                <span class="path1"></span><span class="path2"></span><span
+                                                    class="path3"></span>
+                                            </i>
+                                        @endif
+                                    </a>
+                                </th>
+
+                                <th style="width: 10%">
+                                    <a href="{{ route('person.index', $statusParams) }}"
+                                        class="text-muted fs-7 d-flex align-items-center gap-1 {{ request('sort') === 'active' ? 'fw-bold' : '' }}">
+                                        Status
+                                        @if (request('sort') === 'active')
+                                            <i class="ki-duotone ki-double-{{ request('direction') === 'asc' ? 'up' : 'down' }} d-inline-block"
+                                                style="font-size: 1rem;">
+                                                <span class="path1"></span><span class="path2"></span><span
+                                                    class="path3"></span>
+                                            </i>
+                                        @endif
+                                    </a>
+                                </th>
+
+                                <th style="width: 5%">
+                                    <a href="{{ route('person.index', $createdParams) }}"
+                                        class="text-muted fs-7 d-flex align-items-center gap-1 {{ request('sort') === 'created_at' ? 'fw-bold' : '' }}">
+                                        Datas
+                                        @if (request('sort') === 'created_at')
+                                            <i class="ki-duotone ki-double-{{ request('direction') === 'asc' ? 'up' : 'down' }} d-inline-block"
+                                                style="font-size: 1rem;">
+                                                <span class="path1"></span><span class="path2"></span><span
+                                                    class="path3"></span>
+                                            </i>
+                                        @endif
+                                    </a>
+                                </th>
+
+                                <th class="text-end" style="width: 5%">Ações</th>
                             </tr>
                         </thead>
+
+
+
+
 
 
                         <tbody class="text-gray-600 fw-semibold">
@@ -117,7 +259,6 @@
                                                 : intval($birth->diffInMonths()) .
                                                     ' mês' .
                                                     ($birth->diffInMonths() > 1 ? 'es' : '');
-
                                     @endphp
 
                                     <td class="text-nowrap">
@@ -149,7 +290,8 @@
                                     <td>
                                         <div class="d-flex justify-content-start flex-shrink-0">
 
-                                            <span class="badge badge-light-{{ $person['active'] ? 'success' : 'danger' }}">
+                                            <span
+                                                class="badge badge-light-{{ $person['active'] ? 'success' : 'danger' }}">
                                                 {{ $person['active'] ? 'Público' : 'Inativo' }}
                                             </span>
 
@@ -194,7 +336,8 @@
                                                 title="Editar">
                                                 <i class="ki-outline ki-pencil fs-2"></i>
                                             </a>
-                                            <a href="#" class="btn btn-icon btn-light-danger btn-active-color btn-sm"
+                                            <a href="#"
+                                                class="btn btn-icon btn-light-danger btn-active-color btn-sm"
                                                 data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover"
                                                 title="Deletar">
                                                 <i class="ki-outline ki-trash fs-2"></i>

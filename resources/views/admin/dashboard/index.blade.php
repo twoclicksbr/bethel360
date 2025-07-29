@@ -20,7 +20,7 @@
                     <div class="col-6">
                         <!--begin::Card-->
                         <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-danger p-10"
-                            href="account/overview.html">
+                            href="{{ route('person.index') }}">
                             <i class="ki-outline ki-gift fs-2tx mb-5 ms-n1 text-gray-500"></i>
                             <span class="fs-4 fw-bold">Central de Vidas</span>
                         </a>
@@ -31,7 +31,7 @@
                     <div class="col-6">
                         <!--begin::Card-->
                         <a class="card flex-column justfiy-content-start align-items-start text-start w-100 text-gray-800 text-hover-danger p-10"
-                            href="account/statements.html">
+                            href="{account/statements.html}">
                             <i class="ki-outline ki-technology-2 fs-2tx mb-5 ms-n1 text-gray-500"></i>
                             <span class="fs-4 fw-bold">Agenda Viva</span>
                         </a>
