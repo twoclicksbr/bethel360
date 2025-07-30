@@ -229,8 +229,27 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="symbol symbol-45px me-5">
-                                                <img src="{{ asset('assets/media/avatars/300-14.jpg') }}" alt="" />
+                                                @if (!empty($person['avatar_url']))
+                                                    <img src="{{ $person['avatar_url'] }}" alt="Avatar"
+                                                        class="rounded" />
+                                                @else
+                                                    @php
+                                                        $initial = mb_substr($person['name'], 0, 1);
+                                                        $genderId = $person['id_gender'] ?? null;
+
+                                                        $bgClass = match ($genderId) {
+                                                            1 => 'bg-light-primary text-primary',
+                                                            2 => 'bg-light-danger text-danger',
+                                                            default => 'bg-light-info text-info',
+                                                        };
+                                                    @endphp
+
+                                                    <span class="symbol-label {{ $bgClass }} fw-bold">
+                                                        {{ $initial }}
+                                                    </span>
+                                                @endif
                                             </div>
+
                                             <div class="d-flex justify-content-start flex-column">
                                                 <a href="{{ route('person.edit', base64_encode($person['id'])) }}"
                                                     class="text-gray-900 fw-bold text-hover-primary fs-6">
@@ -242,6 +261,8 @@
                                             </div>
                                         </div>
                                     </td>
+
+
 
                                     {{-- <td class="text-nowrap">
                                         <span class="badge badge-light-secondary" data-bs-toggle="tooltip"

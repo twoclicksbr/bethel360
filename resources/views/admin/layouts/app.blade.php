@@ -1,4 +1,27 @@
 {{-- resources/views/admin/layouts/app.blade.php --}}
+
+<script>
+    (function () {
+        const path = window.location.pathname;
+        const pathKey = path.replaceAll('/', '_');
+        const urlKey = 'grid_full_url_' + pathKey;
+        const exceptPaths = ['/admin', '/admin/dashboard'];
+        const url = new URL(window.location.href);
+        const hasParams = url.search.length > 0;
+
+        if (!hasParams && !exceptPaths.includes(path)) {
+            const savedUrl = localStorage.getItem(urlKey);
+            if (savedUrl) {
+                window.location.replace(savedUrl);
+            } else {
+                url.searchParams.set('sort', 'name');
+                url.searchParams.set('direction', 'asc');
+                window.location.replace(url.toString());
+            }
+        }
+    })();
+</script>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <!--begin::Head-->

@@ -26,18 +26,27 @@
                     </div>
                     <div class="card-body text-center pt-0">
 
-                        <form>
-                            <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3"
-                                data-kt-image-input="true">
+                        <form method="POST" enctype="multipart/form-data" id="avatarForm"
+                            action="{{ env('APP_URL_API') . '/admin/person/' . $person['id'] . '/avatar' }}">
+
+                            @csrf
+                            <div class="image-input image-input-outline mb-3" data-kt-image-input="true">
+                                @php
+                                    $imageUrl =
+                                        $person['avatar_url'] ?? asset('assets/media/svg/files/blank-image.svg');
+                                @endphp
+
                                 <div class="image-input-wrapper w-150px h-150px"
-                                    style="background-image: url({{ asset('assets/media/svg/files/blank-image.svg') }})">
+                                    style="background-image: url('{{ $imageUrl }}')">
                                 </div>
+
                                 <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
                                     data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Escolher avatar">
                                     <i class="ki-outline ki-pencil fs-7"></i>
-                                    <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
+                                    <input type="file" name="avatar" accept=".png, .jpg, .jpeg" id="avatarInput" />
                                     <input type="hidden" name="avatar_remove" />
                                 </label>
+
                                 <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
                                     data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancelar avatar">
                                     <i class="ki-outline ki-cross fs-2"></i>
@@ -55,6 +64,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 {{-- Status --}}
                 @include('admin.person.partials.form-status')
@@ -982,3 +992,5 @@
     </div>
 
 @endsection
+
+@include('admin.person.partials.script')

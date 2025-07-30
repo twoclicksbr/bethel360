@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Admin\TypeContactController;
 use App\Http\Controllers\Api\Admin\TypeDocumentController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Admin\PersonController;
+use App\Http\Controllers\Api\Admin\PersonAvatarController;
 use App\Http\Controllers\Api\Admin\ThemeCelebrationController;
 use App\Http\Controllers\Api\Admin\ThemeCelebrationMinistryController;
 use App\Http\Controllers\Api\Admin\ThemeCelebrationOccurrenceController;
@@ -46,6 +47,10 @@ Route::prefix('admin')->middleware(ApiAuthMiddleware::class)->group(function () 
         Route::get('/deleted', [PersonController::class, 'deleted']);
 
         Route::put('/{id}/active', [PersonController::class, 'updateActive']);
+
+        Route::post('/{id}/avatar', [PersonAvatarController::class, 'store']);
+        Route::get('/{id}/avatar', [PersonAvatarController::class, 'show']);
+        Route::delete('/{id}/avatar', [PersonAvatarController::class, 'destroy']);
     });
 
     // TYPE CONTACT
