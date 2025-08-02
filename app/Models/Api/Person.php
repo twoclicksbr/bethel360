@@ -26,4 +26,11 @@ class Person extends Model
     {
         return $this->belongsTo(TypeGender::class, 'id_gender');
     }
+
+    public function avatar()
+    {
+        return $this->hasOne(PersonAvatar::class, 'id_person')
+            ->where('deleted', 0)
+            ->where('active', 1);
+    }
 }

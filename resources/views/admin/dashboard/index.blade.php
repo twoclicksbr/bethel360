@@ -5,7 +5,8 @@
 @php
     $pageTitle = 'Dashboard'; // para o breadcrumb
     $pageHeading = 'Painel da Liderança'; // para o título da página
-    $pageDescription = 'Acompanhe os principais indicadores da igreja em tempo real, com gráficos, relatórios e alertas estratégicos para líderes.'; // para o título da página
+    $pageDescription =
+        'Acompanhe os principais indicadores da igreja em tempo real, com gráficos, relatórios e alertas estratégicos para líderes.'; // para o título da página
 @endphp
 
 @section('content')

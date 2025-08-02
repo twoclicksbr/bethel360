@@ -18,8 +18,9 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        // 1. Busca person_user com email
-        $personUser = PersonUser::where('email', $request->email)
+        // 1. Busca o person_user com os relacionamentos carregados
+        $personUser = PersonUser::with(['person.avatar', 'person.gender'])
+            ->where('email', $request->email)
             ->where('active', 1)
             ->where('deleted', 0)
             ->first();
@@ -31,7 +32,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // 2. Verifica credential
+        // 2. Verifica se a credencial está ativa
         $credential = Credential::where('id', $personUser->id_credential)
             ->where('active', 1)
             ->where('deleted', 0)
@@ -44,40 +45,47 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // 3. Apaga TODOS os tokens vencidos (independente de quem seja)
+        // 3. Apaga tokens expirados
         Token::where('expires_at', '<', now())->delete();
 
-        // 4. Apaga tokens da mesma id_credential + id_person (mesmo que ainda estejam válidos)
+        // 4. Remove tokens anteriores da mesma pessoa
         Token::where('id_credential', $personUser->id_credential)
             ->where('id_person', $personUser->id_person)
             ->delete();
 
-        // 5. Cria novo token
+        // 5. Gera novo token
         $token = Token::create([
             'id_credential' => $personUser->id_credential,
-            'id_person' => $personUser->id_person,
-            'token' => Str::random(64),
-            'expires_at' => now()->addHours(24),
+            'id_person'     => $personUser->id_person,
+            'token'         => Str::random(64),
+            'expires_at'    => now()->addHours(24),
         ]);
 
+        // 6. Registra log de acesso
         LogAccess::create([
             'id_credential' => $credential->id,
-            'id_person' => $personUser->person->id ?? null,
-            'action' => 'login',
-            'ip' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+            'id_person'     => $personUser->person->id ?? null,
+            'action'        => 'login',
+            'ip'            => request()->ip(),
+            'user_agent'    => request()->userAgent(),
         ]);
 
-        // 6. Resposta
+        // 7. Log do avatar (para debug temporário)
+        logger()->info('Avatar URL:', [
+            'url' => $personUser->person->avatar->avatar_url ?? 'NULO'
+        ]);
+
+        // 8. Retorna resposta com dados de sessão
         return response()->json([
-            'authIdCredential'       => $personUser->id_credential,
-            'authIdPerson'           => $personUser->id_person,
-            'authNamePerson'         => $personUser->person->name ?? '',
-            'authNameFirst'          => strtok($personUser->person->name ?? '', ' '),
-            'authEmailPersonUser'    => $personUser->email,
-            'authIdGender'           => $personUser->person->id_gender ?? null,
-            'authNameGender'         => $personUser->person->gender->name ?? null,
-            'authToken'              => $token->token,
+            'authIdCredential'    => $personUser->id_credential,
+            'authIdPerson'        => $personUser->id_person,
+            'authNamePerson'      => $personUser->person->name ?? '',
+            'authNameFirst'       => strtok($personUser->person->name ?? '', ' '),
+            'authEmailPersonUser' => $personUser->email,
+            'authIdGender'        => $personUser->person->id_gender ?? null,
+            'authNameGender'      => $personUser->person->gender->name ?? null,
+            'authAvatarUrl'       => $personUser->person->avatar->avatar_url ?? null,
+            'authToken'           => $token->token,
         ]);
     }
 

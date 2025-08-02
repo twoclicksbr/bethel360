@@ -36,4 +36,20 @@ Route::middleware(['web', 'session_auth'])->prefix('admin')->group(function () {
     Route::put('/person/{id}/restore', [PersonController::class, 'restore'])->name('person.restore');
 
     Route::put('/person/{id}/active', [PersonController::class, 'update'])->name('person.updateActive');
+
+    Route::get('/person/avatar/refresh', function () {
+        $avatar = \App\Models\Api\PersonAvatar::where('id_person', session('authIdPerson'))
+            ->where('active', 1)
+            ->where('deleted', 0)
+            ->latest()
+            ->first();
+
+        if ($avatar) {
+            session(['authAvatarUrl' => $avatar->avatar_url]);
+        } else {
+            session()->forget('authAvatarUrl'); // 👈 limpa avatar se não houver mais ativo
+        }
+
+        return response()->json(['status' => true]);
+    });
 });

@@ -46,7 +46,11 @@ class LoginController extends Controller
             'authIdGender'        => $data['authIdGender'],
             'authNameGender'      => $data['authNameGender'],
             'authEmailPersonUser' => $data['authEmailPersonUser'],
+            'authAvatarUrl'       => $data['authAvatarUrl'] ?? null,
+
         ]);
+
+        // dd(session('authAvatarUrl'));
 
         return redirect('/admin/dashboard');
     }

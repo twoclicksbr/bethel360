@@ -3,13 +3,14 @@
     {{-- Select de quantidade de registros --}}
     <div>
         <select name="paginate" class="form-select form-select-sm w-auto" data-control="select2" data-hide-search="true">
-            <option value="10">10 registros</option>
-            <option value="20">20 registros</option>
-            <option value="50">50 registros</option>
-            <option value="100">100 registros</option>
-            <option value="all">Todos</option>
+            <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10 registros</option>
+            <option value="20" {{ request('paginate') == '20' ? 'selected' : '' }}>20 registros</option>
+            <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50 registros</option>
+            <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100 registros</option>
+            <option value="all" {{ request('paginate') == 'all' ? 'selected' : '' }}>Todos</option>
         </select>
     </div>
+
 
     {{-- Botões de ação --}}
     <div class="d-flex justify-content-end gap-2">

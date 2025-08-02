@@ -284,7 +284,8 @@
 
                                     <td class="text-nowrap">
                                         <span class="badge badge-light-secondary" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" data-bs-trigger="hover" title="{{ $tooltip }}">
+                                            data-bs-placement="top" data-bs-trigger="hover focus"
+                                            title="{{ $tooltip }}" tabindex="0">
                                             {{ $birth->format('d/m/Y') }}
                                         </span>
                                     </td>
@@ -334,8 +335,9 @@
 
                                     <td>
                                         <div class="d-flex justify-content-start flex-shrink-0">
-                                            <a href="#" class="btn btn-icon btn-light btn-active-color btn-sm me-1"
-                                                data-bs-toggle="tooltip" data-bs-html="true"
+                                            <a class="btn btn-icon btn-light btn-active-color btn-sm me-1" role="button"
+                                                tabindex="0" data-bs-toggle="tooltip" data-bs-html="true"
+                                                data-bs-placement="top" data-bs-trigger="hover focus"
                                                 title="
                                                     <em>Criado em: </em><br> 
                                                     <b>{{ $created }}</b> <br><br> 
@@ -346,6 +348,9 @@
                                             </a>
                                         </div>
                                     </td>
+
+
+
 
 
                                     <td>

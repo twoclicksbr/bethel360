@@ -21,13 +21,9 @@ class PersonAvatarController extends Controller
             ], 400);
         }
 
-        // dd('Avatar upload iniciado'); // debug 1
-
         $file = $request->file('avatar');
         $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs("uploads/avatar/{$id}", $filename, 'public');
-
-        // dd('Avatar salvo em: ' . $path); // debug 2
 
         $avatarUrl = asset("storage/{$path}");
 
@@ -45,12 +41,21 @@ class PersonAvatarController extends Controller
         $avatar->deleted       = 0;
         $avatar->save();
 
+        logger('ID logado: ' . authIdPerson());
+        logger('ID avatar enviado: ' . $id);
+
+        // Atualiza a sessão se for o próprio usuário
+        if (authIdPerson() == $id) {
+            session(['authAvatarUrl' => $avatar->avatar_url]);
+        }
+
         return response()->json([
             'status' => true,
             'avatar_url' => $avatar->avatar_url,
             'message' => 'Avatar enviado com sucesso.',
         ], 201);
     }
+
 
     public function show($id)
     {
