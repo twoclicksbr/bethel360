@@ -4,8 +4,7 @@ use App\Http\Controllers\Front\Admin\PersonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\Auth\LoginController;
 use App\Http\Controllers\Front\Admin\DashboardController;
-
-
+use App\Models\Api\PersonAvatar;
 
 Route::get('/', function () {
     return view('site');
@@ -37,8 +36,11 @@ Route::middleware(['web', 'session_auth'])->prefix('admin')->group(function () {
 
     Route::put('/person/{id}/active', [PersonController::class, 'update'])->name('person.updateActive');
 
+    Route::get('/person/print', [PersonController::class, 'print'])->name('person.print');
+
+
     Route::get('/person/avatar/refresh', function () {
-        $avatar = \App\Models\Api\PersonAvatar::where('id_person', session('authIdPerson'))
+        $avatar = PersonAvatar::where('id_person', session('authIdPerson'))
             ->where('active', 1)
             ->where('deleted', 0)
             ->latest()

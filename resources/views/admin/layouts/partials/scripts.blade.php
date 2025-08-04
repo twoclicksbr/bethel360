@@ -71,7 +71,9 @@
 
         // 🔁 Aplica estado salvo (painel aberto/fechado)
         if (localStorage.getItem(stateKey) === 'show') {
-            new bootstrap.Collapse(searchPanel, { toggle: false }).show();
+            new bootstrap.Collapse(searchPanel, {
+                toggle: false
+            }).show();
         }
 
         // 🟢 Botão abrir/fechar painel
@@ -142,3 +144,26 @@
     });
 </script>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('btn-print-global');
+        if (!btn) return;
+
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const currentPath = window.location.pathname;
+            const base = currentPath.replace(/\/$/, '') + '/print';
+            const query = new URLSearchParams(window.location.search);
+            query.set('paginate', 'all');
+
+            const finalUrl = base + '?' + query.toString();
+            const win = window.open(finalUrl, '_blank');
+
+            if (!win || win.closed || typeof win.closed === 'undefined') {
+                alert('Por favor, permita pop-ups no seu navegador.');
+            }
+        });
+    });
+</script>

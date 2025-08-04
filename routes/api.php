@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\CampusController;
 use App\Http\Controllers\Api\Admin\ContactController;
 use App\Http\Controllers\Api\Admin\DocumentController;
 use App\Http\Controllers\Api\Admin\FileController;
+use App\Http\Controllers\Api\Admin\LogOperationController;
 use App\Http\Controllers\Api\Admin\MinistryCampusController;
 use App\Http\Controllers\Api\Admin\MinistryController;
 use App\Http\Controllers\Api\Admin\MinistryLeaderController;
@@ -320,6 +321,21 @@ Route::prefix('admin')->middleware(ApiAuthMiddleware::class)->group(function () 
 
 
 
+
+
+
+
+
+    // LOG OPERATION
+    Route::prefix('log-operation')->group(function () {
+        Route::get('/', [LogOperationController::class, 'index']);
+        Route::get('/deleted', [LogOperationController::class, 'deleted']);
+        Route::get('/{ids}', [LogOperationController::class, 'show']);
+        Route::post('/', [LogOperationController::class, 'store']);
+        Route::put('/{id}', [LogOperationController::class, 'update']);
+        Route::delete('/{id}', [LogOperationController::class, 'destroy']);
+        Route::put('/{id}/restore', [LogOperationController::class, 'restore']);
+    });
 
     Route::put('{module}', function ($module) {
         return response()->json([

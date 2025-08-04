@@ -1,25 +1,22 @@
 <div class="card-toolbar">
-    <a href="{{ route('person.create') }}" class="btn btn-sm btn-light-danger btn-active-danger me-2">
+    @php
+        $routeBase = explode('.', Route::currentRouteName())[0];
+    @endphp
+
+    <a href="{{ route($routeBase . '.create') }}" class="btn btn-sm btn-light-danger btn-active-danger me-2">
         <i class="ki-duotone ki-plus fs-1"></i>
-        Nova Pessoa
+        Novo Registro
     </a>
 
-    {{-- <a href="" class="btn btn-sm btn-light-primary btn-active-primary">
+    <a id="btn-toggle-search" class="btn btn-sm btn-light-primary btn-active-primary me-2" data-bs-toggle="collapse"
+        href="#searchPanel" role="button" aria-expanded="false" aria-controls="searchPanel">
         <i class="ki-duotone ki-search-list fs-1">
-            <span class="path1"></span>
-            <span class="path2"></span>
-            <span class="path3"></span>
+            <span class="path1"></span><span class="path2"></span><span class="path3"></span>
         </i>
         Pesquisar
-    </a> --}}
+    </a>
 
-    <a id="btn-toggle-search" class="btn btn-sm btn-light-primary btn-active-primary" data-bs-toggle="collapse" href="#searchPanel" role="button"
-        aria-expanded="false" aria-controls="searchPanel">
-        <i class="ki-duotone ki-search-list fs-1">
-            <span class="path1"></span>
-            <span class="path2"></span>
-            <span class="path3"></span>
-        </i>
-        Pesquisar
+    <a href="#" id="btn-print-global" class="btn btn-sm btn-icon btn-light-primary">
+        <i class="fas fa-print"></i>
     </a>
 </div>

@@ -7,6 +7,8 @@ use App\Models\Api\Person;
 use App\Models\Api\TypeGender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Models\Api\LogOperation;
+
 
 class PersonController extends Controller
 {
@@ -212,5 +214,45 @@ class PersonController extends Controller
         ])->put(env('APP_URL_API') . "/admin/person/{$id}/restore");
 
         return redirect()->route('person.index');
+    }
+
+
+    public function print(Request $request)
+    {
+        $token = session('authToken');
+
+        // Recupera os filtros da URL
+        $filters = $request->query();
+
+        // Envia junto o token e os filtros
+        $response = Http::withHeaders([
+            'token' => $token
+        ])->get(env('APP_URL_API') . '/admin/person', $filters);
+
+        $json = $response->json();
+        $people = $json['data']['data'] ?? [];
+
+        // $fake = collect($people)->take(3); // pega 3 registros reais
+
+        // for ($i = 0; $i < 30; $i++) {
+        //     foreach ($fake as $item) {
+        //         $item['name'] .= " - cópia {$i}";
+        //         $people[] = $item;
+        //     }
+        // }
+
+        // dd([
+        //     'id_credential' => authIdCredential(),
+        //     'id_person' => authIdPerson(),
+        // ]);
+
+
+        // Log de impressão
+        sc360Log('print', 'person', [
+            'filters' => $request->query(),
+            'url'     => $request->fullUrl(),
+        ]);
+
+        return view('admin.person.print', compact('people'));
     }
 }
