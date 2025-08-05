@@ -6,9 +6,17 @@
             <ul class="pagination">
                 @foreach ($pagination['links'] as $link)
                     @php
-                        $page = $link['url'] ? Str::after($link['url'], 'page=') : null;
+                        if ($link['url']) {
+                            $parsed = parse_url($link['url']);
+                            parse_str($parsed['query'] ?? '', $params);
+                            $page = $params['page'] ?? null;
+                        } else {
+                            $page = null;
+                        }
+
                         $queryString = http_build_query(array_merge(request()->query(), ['page' => $page]));
                         $url = $page ? url()->current() . '?' . $queryString : null;
+
                         $label = str_replace(
                             ['pagination.previous', 'pagination.next'],
                             ['&laquo;', '&raquo;'],

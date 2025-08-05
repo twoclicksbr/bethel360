@@ -23,8 +23,14 @@ class PersonController extends Controller
         $idCredential = authIdCredential();
 
         $query = Person::with('gender')
-            ->where('id_credential', $idCredential)
-            ->where('deleted', 0);
+            ->where('id_credential', $idCredential);
+
+        // 👇 Filtra por excluídos
+        if ($request->filled('show_deleted')) {
+            $query->where('deleted', 1);
+        } else {
+            $query->where('deleted', 0);
+        }
 
         // 🔍 Filtros
         if ($request->filled('search_id')) {
@@ -108,7 +114,6 @@ class PersonController extends Controller
             ];
         });
 
-        // 🔁 Cria novo paginator com os dados mapeados
         $paginated = new LengthAwarePaginator(
             $mappedData,
             $paginator->total(),
@@ -288,5 +293,39 @@ class PersonController extends Controller
         $pessoa->save();
 
         return response()->json(['message' => 'Pessoa restaurada com sucesso.']);
+    }
+
+    public function batchStatus(Request $request)
+    {
+        $ids    = $request->input('ids', []);
+        $action = $request->input('action');
+
+        if (empty($ids) || !in_array($action, ['public', 'inactive', 'delete'])) {
+            return response()->json(['status' => false, 'message' => 'Parâmetros inválidos.'], 400);
+        }
+
+        $active  = null;
+        $deleted = null;
+
+        if ($action === 'public') {
+            $active = 1;
+        } elseif ($action === 'inactive') {
+            $active = 0;
+        } elseif ($action === 'delete') {
+            $deleted = 1;
+        }
+
+        $query = Person::whereIn('id', $ids)
+            ->where('id_credential', $request->authIdCredential);
+
+        if (!is_null($active)) {
+            $query->update(['active' => $active]);
+        }
+
+        if (!is_null($deleted)) {
+            $query->update(['deleted' => $deleted]);
+        }
+
+        return response()->json(['status' => true, 'message' => 'Registros atualizados com sucesso.']);
     }
 }

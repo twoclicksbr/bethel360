@@ -8,7 +8,7 @@ use App\Models\Api\TypeGender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Api\LogOperation;
-
+use Illuminate\Support\Facades\Log;
 
 class PersonController extends Controller
 {

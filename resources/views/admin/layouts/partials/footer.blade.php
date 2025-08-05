@@ -1,26 +1,25 @@
 {{-- resources/views/layouts/partials/footer.blade.php --}}
 
-<!--begin::Wrapper container-->
 <div class="app-container container-xxl">
-    <!--begin::Main-->
-    <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
-        <!--begin::Content wrapper-->
-        <div class="d-flex flex-column flex-column-fluid">
-            <!--begin::Content-->
 
-            <!--end::Content-->
+    <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+
+        <div class="d-flex flex-column flex-column-fluid">
+
+
+
         </div>
-        <!--end::Content wrapper-->
-        <!--begin::Footer-->
+
+
         <div id="kt_app_footer"
             class="app-footer d-flex flex-column flex-md-row align-items-center flex-center flex-md-stack py-2 py-lg-4">
-            <!--begin::Copyright-->
+
             <div class="text-gray-900 order-2 order-md-1">
                 <span class="text-muted fw-semibold me-1">{{ date('Y') }}&copy;</span>
                 <a href="#" target="_blank" class="text-gray-800 text-hover-primary"><i class="ki-outline ki-mouse text-gray-800"></i> TwoClicks</a>
             </div>
-            <!--end::Copyright-->
-            <!--begin::Menu-->
+
+
             <ul class="menu menu-gray-600 menu-hover-primary fw-semibold order-1">
                 <li class="menu-item">
                     <a href="https://keenthemes.com" target="_blank" class="menu-link px-2">About</a>
@@ -33,10 +32,9 @@
                         target="_blank" class="menu-link px-2">Purchase</a>
                 </li>
             </ul>
-            <!--end::Menu-->
+
         </div>
-        <!--end::Footer-->
+
     </div>
-    <!--end:::Main-->
+
 </div>
-<!--end::Wrapper container-->

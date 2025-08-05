@@ -43,11 +43,14 @@ Route::prefix('admin')->middleware(ApiAuthMiddleware::class)->group(function () 
         Route::get('/', [PersonController::class, 'index']);
         Route::post('/', [PersonController::class, 'store']);
         Route::get('/{ids}', [PersonController::class, 'show']);
+        Route::put('/batch-status', [PersonController::class, 'batchStatus']);
         Route::put('/{id}', [PersonController::class, 'update']);
         Route::delete('/{id}', [PersonController::class, 'destroy']);
         Route::get('/deleted', [PersonController::class, 'deleted']);
 
         Route::put('/{id}/active', [PersonController::class, 'updateActive']);
+
+        Route::post('/{id}/restore', [PersonController::class, 'restore']);
 
         Route::post('/{id}/avatar', [PersonAvatarController::class, 'store']);
         Route::get('/{id}/avatar', [PersonAvatarController::class, 'show']);

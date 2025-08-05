@@ -23,20 +23,28 @@
             </div>
 
             {{-- Filtros --}}
-            @include('admin.layouts.partials.filter-panel');
+            @include('admin.layouts.partials.filter-panel')
 
             <div id="table-wrapper">
                 <div class="card-body py-3">
                     <div class="table-responsive">
+
+                        @php
+                            $showDeleted = request()->get('show_deleted') == '1';
+                        @endphp
+
                         <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                             <thead>
                                 <tr class="fw-bold text-muted">
-                                    <th class="w-25px">
-                                        <div class="form-check form-check-sm form-check-custom form-check-solid">
-                                            <input class="form-check-input" type="checkbox" value="1"
-                                                data-kt-check="true" data-kt-check-target=".widget-9-check" />
-                                        </div>
-                                    </th>
+
+                                    @if (!$showDeleted)
+                                        <th class="w-25px">
+                                            <div class="form-check form-check-sm form-check-custom form-check-solid">
+                                                <input class="form-check-input" type="checkbox" value="1"
+                                                    data-kt-check="true" data-kt-check-target=".widget-9-check" />
+                                            </div>
+                                        </th>
+                                    @endif
 
                                     @php
                                         $allParams = request()->all();
@@ -188,12 +196,17 @@
                             <tbody class="text-gray-600 fw-semibold">
                                 @forelse($people as $person)
                                     <tr>
-                                        <td>
-                                            <div class="form-check form-check-sm form-check-custom form-check-solid">
-                                                <input class="form-check-input widget-9-check" type="checkbox"
-                                                    value="1" />
-                                            </div>
-                                        </td>
+
+
+                                        @if (!$showDeleted)
+                                            <td>
+                                                <div class="form-check form-check-sm form-check-custom form-check-solid">
+                                                    <input type="checkbox" class="form-check-input widget-9-check"
+                                                        data-sc360-check data-id="{{ $person['id'] }}">
+                                                </div>
+                                            </td>
+                                        @endif
+
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="symbol symbol-45px me-5">
@@ -219,10 +232,16 @@
                                                 </div>
 
                                                 <div class="d-flex justify-content-start flex-column">
-                                                    <a href="{{ route('person.edit', base64_encode($person['id'])) }}"
-                                                        class="text-gray-900 fw-bold text-hover-primary fs-6">
-                                                        {{ $person['id'] . ' - ' . $person['name'] }}
-                                                    </a>
+                                                    @if (!$showDeleted)
+                                                        <a href="{{ route('person.edit', base64_encode($person['id'])) }}"
+                                                            class="text-gray-900 fw-bold text-hover-primary fs-6">
+                                                            {{ $person['id'] . ' - ' . $person['name'] }}
+                                                        </a>
+                                                    @else
+                                                        <span class="text-gray-900 fw-bold fs-6">
+                                                            {{ $person['id'] . ' - ' . $person['name'] }}
+                                                        </span>
+                                                    @endif
                                                     <span class="text-muted fw-semibold text-muted d-block fs-7">
                                                         Endereço, 25 - Bairro - Cidade / UF
                                                     </span>
@@ -308,22 +327,34 @@
 
                                         <td>
                                             <div class="d-flex justify-content-end flex-shrink-0">
+                                                @if (!$showDeleted)
+                                                    <a href="{{ route('person.edit', base64_encode($person['id'])) }}"
+                                                        class="btn btn-icon btn-light-warning btn-active-color btn-sm me-1"
+                                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        data-bs-trigger="hover" title="Editar">
+                                                        <i class="ki-outline ki-pencil fs-2"></i>
+                                                    </a>
 
-                                                <a href="{{ route('person.edit', base64_encode($person['id'])) }}"
-                                                    class="btn btn-icon btn-light-warning btn-active-color btn-sm me-1"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    data-bs-trigger="hover" title="Editar">
-                                                    <i class="ki-outline ki-pencil fs-2"></i>
-                                                </a>
-                                                <a href="#"
-                                                    class="btn btn-icon btn-light-danger btn-active-color btn-sm"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    data-bs-trigger="hover" title="Deletar">
-                                                    <i class="ki-outline ki-trash fs-2"></i>
-                                                </a>
-
+                                                    <a href="#"
+                                                        class="btn btn-sm btn-icon btn-light-danger btn-delete"
+                                                        data-id="{{ $person['id'] }}" data-module="person"
+                                                        data-bs-toggle="tooltip" title="Excluir">
+                                                        <i class="ki-outline ki-trash fs-2"></i>
+                                                    </a>
+                                                @else
+                                                    <a href="#"
+                                                        class="btn btn-sm btn-icon btn-light-success btn-restore"
+                                                        data-id="{{ $person['id'] }}" data-module="person"
+                                                        data-bs-toggle="tooltip" title="Restaurar">
+                                                        <i class="ki-duotone ki-arrows-loop">
+                                                            <span class="path1"></span>
+                                                            <span class="path2"></span>
+                                                        </i>
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
+
                                     </tr>
 
                                 @empty
