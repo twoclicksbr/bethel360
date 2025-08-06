@@ -79,28 +79,37 @@ class AddressController extends Controller
 
     public function store(AddressRequest $request)
     {
-        $idCredential = authIdCredential();
+        $idCredential = $request->get('authIdCredential');
 
-        $item = new Address();
-        $item->id_credential = $idCredential;
-        $item->target_table = $request->target_table;
-        $item->id_target = $request->id_target;
-        $item->id_type_address = $request->id_type_address;
-        $item->zipcode = $request->zipcode;
-        $item->street = $request->street;
-        $item->number = $request->number;
-        $item->complement = $request->complement;
-        $item->district = $request->district;
-        $item->city = $request->city;
-        $item->state = $request->state;
-        $item->country = $request->country;
-        $item->active = $request->active ?? 1;
-        $item->deleted = 0;
-        $item->save();
+        if ($request->main) {
+            Address::where('id_target', $request->id_target)
+                ->where('target_table', $request->target_table)
+                ->where('id_credential', $idCredential)
+                ->where('deleted', 0)
+                ->update(['main' => 0]);
+        }
+
+        $endereco = new Address();
+        $endereco->id_credential    = $idCredential;
+        $endereco->target_table     = $request->target_table;
+        $endereco->id_target        = $request->id_target;
+        $endereco->id_type_address  = $request->id_type_address;
+        $endereco->zipcode          = $request->zipcode;
+        $endereco->street           = $request->street;
+        $endereco->number           = $request->number;
+        $endereco->complement       = $request->complement;
+        $endereco->neighborhood     = $request->neighborhood;
+        $endereco->city             = $request->city;
+        $endereco->state            = $request->state;
+        $endereco->country          = $request->country;
+        $endereco->main             = $request->main ?? 0;
+        $endereco->active           = $request->active ?? 1;
+        $endereco->deleted          = 0;
+        $endereco->save();
 
         return response()->json([
             'message' => 'Endereço criado com sucesso.',
-            'data' => $item
+            'data'    => $endereco,
         ], 201);
     }
 
@@ -120,6 +129,14 @@ class AddressController extends Controller
             ], 404);
         }
 
+        if ($request->main && $item->main != 1) {
+            Address::where('id_target', $request->id_target)
+                ->where('target_table', $request->target_table)
+                ->where('id_credential', $idCredential)
+                ->where('deleted', 0)
+                ->update(['main' => 0]);
+        }
+
         $item->target_table = $request->target_table;
         $item->id_target = $request->id_target;
         $item->id_type_address = $request->id_type_address;
@@ -127,10 +144,11 @@ class AddressController extends Controller
         $item->street = $request->street;
         $item->number = $request->number;
         $item->complement = $request->complement;
-        $item->district = $request->district;
+        $item->neighborhood = $request->neighborhood;
         $item->city = $request->city;
         $item->state = $request->state;
         $item->country = $request->country;
+        $item->main = $request->main ?? $item->main;
         $item->active = $request->active ?? $item->active;
         $item->save();
 

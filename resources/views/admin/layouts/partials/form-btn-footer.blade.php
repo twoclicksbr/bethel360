@@ -1,18 +1,23 @@
 <div class="card-footer d-flex justify-content-end py-6 px-0">
-    <a href="{{ route('person.index') }}" class="btn btn-light-danger btn-active-danger me-2">
-        <i class="ki-duotone ki-cross-circle">
-            <span class="path1"></span>
-            <span class="path2"></span>
-        </i>
+    @if (!empty($showActiveCheckbox))
+        <div class="d-flex align-items-center me-auto">
+            <div class="form-check form-switch form-check-custom form-check-danger form-check-solid">
+                <input class="form-check-input h-20px w-30px" type="checkbox" name="active" value="1"
+                    id="activeSwitch" {{ old('active', 1) ? 'checked' : '' }}>
+                <label class="form-check-label" for="activeSwitch">
+                    Público
+                </label>
+            </div>
+        </div>
+    @endif
+
+    <a href="{{ $routeCancel ?? '#' }}" class="btn btn-sm btn-light-danger btn-active-danger me-2">
+        <i class="ki-duotone ki-cross-circle"><span class="path1"></span><span class="path2"></span></i>
         Cancelar
     </a>
 
-    <button type="submit" class="btn btn-light-primary" id="kt_account_profile_details_submit">
-        <i class="ki-duotone ki-send">
-            <span class="path1"></span>
-            <span class="path2"></span>
-        </i>
+    <button type="submit" class="btn btn-sm btn-light-primary" id="kt_account_profile_details_submit">
+        <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
         Savar Registro
     </button>
-
 </div>

@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Api\LogOperation;
 use Illuminate\Support\Facades\Log;
+use App\Models\Api\Address;
+use App\Models\Api\TypeAddress;
 
 class PersonController extends Controller
 {
@@ -16,10 +18,36 @@ class PersonController extends Controller
     {
         $token = session('authToken');
 
+        // Se não tiver sort na URL, tenta buscar último filtro do banco
+        if (!$request->has('sort')) {
+            $memory = \App\Models\Api\UserFilterMemory::where('id_credential', authIdCredential())
+                ->where('id_person', authIdPerson())
+                ->where('route', '/admin/person')
+                ->first();
+
+            if ($memory && $memory->full_url !== $request->fullUrl()) {
+                return redirect($memory->full_url);
+            }
+        }
+
         // Captura filtros
         $query = $request->query();
         $query['sort'] = $request->get('sort', 'name');
         $query['direction'] = $request->get('direction', 'asc');
+
+        // Salva no banco a URL atual
+        if (authIdPerson() && authIdCredential()) {
+            \App\Models\Api\UserFilterMemory::updateOrCreate(
+                [
+                    'id_credential' => authIdCredential(),
+                    'id_person' => authIdPerson(),
+                    'route' => '/admin/person',
+                ],
+                [
+                    'full_url' => $request->fullUrl(),
+                ]
+            );
+        }
 
         // Lista de pessoas
         $response = Http::withHeaders([
@@ -43,7 +71,7 @@ class PersonController extends Controller
             ->get()
             ->keyBy('id_person');
 
-        // Vincula avatar a cada pessoa (usando array_map para manter os dados)
+        // Vincula avatar a cada pessoa
         $people = array_map(function ($person) use ($avatarList) {
             $person['avatar_url'] = $avatarList[$person['id']]->avatar_url ?? null;
             return $person;
@@ -61,6 +89,7 @@ class PersonController extends Controller
 
         return view('admin.person.index', compact('people', 'pagination', 'genders'));
     }
+
 
     public function create()
     {
@@ -100,7 +129,7 @@ class PersonController extends Controller
         return redirect()->back()->withErrors($response->json()['errors'] ?? ['Erro ao salvar']);
     }
 
-    public function edit($encodedId)
+    public function edit($encodedId, $tab = 'dados')
     {
         $id = base64_decode($encodedId);
         $token = session('authToken');
@@ -116,7 +145,7 @@ class PersonController extends Controller
             abort(404, 'Pessoa não encontrada.');
         }
 
-        // Busca o avatar via API
+        // Busca o avatar
         $avatarResponse = Http::withHeaders([
             'token' => $token,
         ])->get(env('APP_URL_API') . "/admin/person/$id/avatar");
@@ -127,6 +156,21 @@ class PersonController extends Controller
             $person['avatar_url'] = $avatarData['avatar_url'];
         }
 
+        // Verifica se já existe endereço
+        $hasAnyAddress = Address::where('target_table', 'person')
+            ->where('id_target', $id)
+            ->where('deleted', 0)
+            ->exists();
+
+        // Busca os endereços via API
+        $addressResponse = Http::withHeaders([
+            'token' => $token,
+        ])->get(env('APP_URL_API') . "/admin/address", [
+            'target_table' => 'person',
+            'id_target'    => $id,
+        ]);
+
+        $addresses = $addressResponse->json('data.data') ?? [];
 
         return view('admin.person.edit', [
             'person' => $person,
@@ -137,9 +181,22 @@ class PersonController extends Controller
                 })
                 ->where('active', 1)
                 ->orderBy('name')
-                ->get()
+                ->get(),
+            'typeAddresses' => TypeAddress::where('deleted', 0)
+                ->where(function ($q) {
+                    $q->where('id_credential', authIdCredential())
+                        ->orWhere('id_credential', 1);
+                })
+                ->where('active', 1)
+                ->orderBy('name')
+                ->get(),
+            'tab' => $tab ?? 'dados',
+            'hasAnyAddress' => $hasAnyAddress,
+            'addresses' => $addresses, // 👈 Adicionado aqui
         ]);
     }
+
+
 
 
     public function update(Request $request, $id)
@@ -254,5 +311,34 @@ class PersonController extends Controller
         ]);
 
         return view('admin.person.print', compact('people'));
+    }
+
+    public function storeAddress(Request $request)
+    {
+        $data = [
+            'target_table'     => $request->target_table,
+            'id_target'        => $request->id_target,
+            'zipcode'          => $request->zipcode,
+            'street'           => $request->street,
+            'number'           => $request->number,
+            'complement'       => $request->complement,
+            'neighborhood'     => $request->neighborhood,
+            'city'             => $request->city,
+            'state'            => $request->state,
+            'country'          => $request->country,
+            'id_type_address'  => $request->id_type_address,
+            'main'             => $request->has('main') ? 1 : 0,
+            'active'           => $request->input('active', 1),
+        ];
+
+        $response = Http::withHeaders([
+            'token' => session('authToken'),
+        ])->post(env('APP_URL_API') . '/admin/address', $data);
+
+        if ($response->successful()) {
+            return redirect()->back()->with('success', 'Endereço salvo com sucesso.');
+        }
+
+        return redirect()->back()->withErrors($response->json()['errors'] ?? ['Erro ao salvar endereço.']);
     }
 }

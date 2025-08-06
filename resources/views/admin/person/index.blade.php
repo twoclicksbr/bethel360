@@ -1,3 +1,11 @@
+@if (!request()->has('sort') && !request()->has('direction'))
+    <script>
+        const redirectUrl = localStorage.getItem('grid_full_url_admin_person');
+        if (redirectUrl) window.location.href = redirectUrl;
+    </script>
+@endif
+
+
 @extends('admin.layouts.app')
 
 @section('title', 'Central de Vidas | ' . config('app.title'))
@@ -7,6 +15,7 @@
     $pageHeading = 'Lista de Pessoas'; // para o título da página
     $pageDescription =
         'A Central de Vidas é o módulo responsável por cadastrar, organizar e gerenciar todas as pessoas da igreja, incluindo membros, visitantes, voluntários e líderes.'; // para o título da página
+    $module = 'person';
 @endphp
 
 @section('content')

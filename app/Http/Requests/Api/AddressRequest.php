@@ -9,7 +9,6 @@ class AddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_credential' => 'required|integer|exists:credential,id',
             'target_table' => 'required|string|max:100',
             'id_target' => 'required|integer',
             'id_type_address' => 'required|integer|exists:type_address,id',
@@ -21,6 +20,7 @@ class AddressRequest extends FormRequest
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:100',
             'country' => 'nullable|string|max:100',
+            'main' => 'nullable|boolean',
             'active' => 'nullable|boolean',
         ];
     }
@@ -28,7 +28,6 @@ class AddressRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'id_credential.required' => 'A credencial é obrigatória.',
             'target_table.required' => 'A tabela de destino é obrigatória.',
             'id_target.required' => 'O ID do destino é obrigatório.',
             'id_type_address.required' => 'O tipo de endereço é obrigatório.',

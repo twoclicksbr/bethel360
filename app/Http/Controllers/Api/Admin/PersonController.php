@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Http\Requests\Api\AddressRequest;
 
 
 
@@ -327,5 +328,28 @@ class PersonController extends Controller
         }
 
         return response()->json(['status' => true, 'message' => 'Registros atualizados com sucesso.']);
+    }
+
+    public function storeAddress(Request $request, $id)
+    {
+        $request->merge([
+            'id_target' => $id,
+            'target_table' => 'person',
+            'authIdCredential' => authIdCredential(),
+        ]);
+
+        $request->validate([
+            'zipcode' => 'required',
+            'street' => 'required',
+            'number' => 'required',
+            'neighborhood' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'id_type_address' => 'required',
+        ]);
+
+        $controller = new \App\Http\Controllers\Api\Admin\AddressController();
+        $addressRequest = AddressRequest::createFrom($request);
+        return $controller->store($addressRequest);
     }
 }

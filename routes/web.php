@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AddressController;
 use App\Http\Controllers\Front\Admin\PersonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\Auth\LoginController;
@@ -25,6 +26,13 @@ Route::middleware(['web', 'session_auth'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+
+
+
+
+
+
+
     Route::get('/person', [PersonController::class, 'index'])->name('person.index');
     Route::get('/person/create', [PersonController::class, 'create'])->name('person.create');
     Route::get('/person/edit/{encodedId}', [PersonController::class, 'edit'])->name('person.edit');
@@ -37,6 +45,22 @@ Route::middleware(['web', 'session_auth'])->prefix('admin')->group(function () {
     Route::put('/person/{id}/active', [PersonController::class, 'update'])->name('person.updateActive');
 
     Route::get('/person/print', [PersonController::class, 'print'])->name('person.print');
+
+    Route::post('/person/{id}/address', [PersonController::class, 'storeAddress'])->name('person.address.store');
+    // Route::post('/person/{id}/address', [AddressController::class, 'store']);
+
+
+
+
+    Route::get('/person/edit/{encodedId}/{tab?}', [PersonController::class, 'edit'])->name('person.edit');
+
+
+
+
+
+
+
+
 
 
     Route::get('/person/avatar/refresh', function () {

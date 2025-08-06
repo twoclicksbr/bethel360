@@ -55,6 +55,8 @@ Route::prefix('admin')->middleware(ApiAuthMiddleware::class)->group(function () 
         Route::post('/{id}/avatar', [PersonAvatarController::class, 'store']);
         Route::get('/{id}/avatar', [PersonAvatarController::class, 'show']);
         Route::delete('/{id}/avatar', [PersonAvatarController::class, 'destroy']);
+
+        Route::post('/{id}/address', [AddressController::class, 'store'])->name('person.address.store');
     });
 
     // TYPE CONTACT

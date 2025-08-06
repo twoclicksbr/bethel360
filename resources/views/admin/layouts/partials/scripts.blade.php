@@ -1,3 +1,18 @@
+<script>
+    const rawPath = window.location.pathname.replace(/\/$/, '');
+    const pathKey = rawPath.replaceAll('/', '_');
+    const urlKey = 'grid_full_url_' + pathKey;
+    const exceptPaths = ['/admin', '/admin/dashboard'];
+
+    const hasParams = window.location.search.length > 0;
+    const savedUrl = localStorage.getItem(urlKey);
+
+    if (!hasParams && savedUrl && !exceptPaths.includes(rawPath)) {
+        window.location.href = savedUrl;
+    }
+</script>
+
+
 <!-- Define a URL base para os assets -->
 <script>
     var hostUrl = "assets/";
@@ -75,26 +90,18 @@
             toggle: false
         });
 
-        // Aplicar estado salvo do painel
+        // Estado do painel
         const savedState = localStorage.getItem(stateKey);
-        if (savedState === 'show') collapse.show();
-        else collapse.hide();
+        savedState === 'show' ? collapse.show() : collapse.hide();
 
-        // Botão de abrir/fechar painel
+        // Botão abre/fecha
         btnToggleSearch?.addEventListener('click', () => {
             const isOpen = filterPanel.classList.contains('show');
-
-            if (isOpen) {
-                localStorage.setItem(stateKey, 'hide'); // 👈 grava antes de esconder
-                collapse.hide();
-            } else {
-                localStorage.setItem(stateKey, 'show'); // 👈 grava antes de mostrar
-                collapse.show();
-            }
+            localStorage.setItem(stateKey, isOpen ? 'hide' : 'show');
+            isOpen ? collapse.hide() : collapse.show();
         });
 
-
-        // Botão ❌ fecha painel
+        // Botão fechar ❌
         btnCloseSearch?.addEventListener('click', () => {
             collapse.hide();
             localStorage.setItem(stateKey, 'hide');
@@ -103,22 +110,60 @@
         // Botão limpar filtros
         btnClear?.addEventListener('click', (e) => {
             e.preventDefault();
+
+            // Salva a URL sempre que houver mudança em qualquer filtro
             form?.querySelectorAll('input, select').forEach(el => {
-                if (el.type === 'checkbox') el.checked = false;
-                else if (el.tagName === 'SELECT') el.selectedIndex = 0;
-                else el.value = '';
+                const name = el.name;
+                if (!name) return;
+
+                const saveUrl = () => {
+                    const formUrl = new URL(window.location.origin + rawPath);
+                    form.querySelectorAll('input, select').forEach(el2 => {
+                        const name = el2.name;
+                        if (!name) return;
+                        const isCheckbox = el2.type === 'checkbox';
+                        const val = isCheckbox ? (el2.checked ? 1 : '') : el2.value;
+                        if (val !== '') {
+                            formUrl.searchParams.set(name, val);
+                        }
+                    });
+
+                    if (!formUrl.searchParams.has('sort')) {
+                        formUrl.searchParams.set('sort', 'id');
+                        formUrl.searchParams.set('direction', 'desc');
+                    }
+
+                    if (!formUrl.searchParams.has('paginate')) {
+                        formUrl.searchParams.set('paginate', '10');
+                    }
+
+                    localStorage.setItem('grid_full_url_admin_person', formUrl.toString());
+                };
+
+                if (el.dataset.control === 'select2') {
+                    $(el).on('select2:select', saveUrl);
+                } else if (['checkbox', 'radio'].includes(el.type)) {
+                    el.addEventListener('click', saveUrl);
+                } else {
+                    el.addEventListener('change', saveUrl);
+                }
             });
 
-            const defaultParams = '?sort=name&direction=asc&paginate=10';
-            localStorage.setItem(urlKey, defaultParams);
+
+
+            const defaultParams = '?sort=id&direction=asc&paginate=10';
+            const fullDefaultUrl = window.location.origin + rawPath + defaultParams;
+
+            localStorage.setItem(urlKey, fullDefaultUrl);
             localStorage.setItem(stateKey, 'hide');
-            window.location.href = window.location.pathname + defaultParams;
+            window.location.href = fullDefaultUrl;
         });
 
-        // Submeter filtro
-        form?.addEventListener('submit', () => {
+        // Submete o form e salva a URL completa
+        form?.addEventListener('submit', (e) => {
+            e.preventDefault();
+
             const formUrl = new URL(window.location.origin + rawPath);
-            let hasFilters = false;
 
             form.querySelectorAll('input, select').forEach(el => {
                 const name = el.name;
@@ -128,69 +173,73 @@
 
                 if (val !== '') {
                     formUrl.searchParams.set(name, val);
-                    hasFilters = true;
-                } else {
-                    formUrl.searchParams.delete(name);
                 }
             });
 
-            if (hasFilters) {
-                localStorage.setItem(urlKey, formUrl.search);
-            } else {
-                localStorage.removeItem(urlKey);
+            if (!formUrl.searchParams.has('paginate')) {
+                formUrl.searchParams.set('paginate', '10');
             }
 
-            // Importante: grava estado como aberto
-            const isOpen = filterPanel.classList.contains('show');
-
-
+            localStorage.setItem(urlKey, formUrl.toString());
+            window.location.href = formUrl.toString();
         });
 
-        // Preencher filtros com base na URL
-        if (hasParams) {
-            const params = new URLSearchParams(window.location.search);
-            form?.querySelectorAll('input, select').forEach(el => {
+        // Salva a URL completa ao clicar no botão Pesquisar (caso use botão)
+        document.getElementById('btn-search')?.addEventListener('click', () => {
+            const formUrl = new URL(window.location.origin + rawPath);
+
+            form.querySelectorAll('input, select').forEach(el => {
                 const name = el.name;
                 if (!name) return;
-                const val = params.get(name);
-                if (val !== null) {
-                    if (el.type === 'checkbox') el.checked = val === '1';
-                    else el.value = val;
+                const isCheckbox = el.type === 'checkbox';
+                const val = isCheckbox ? (el.checked ? 1 : '') : el.value;
+
+                if (val !== '') {
+                    formUrl.searchParams.set(name, val);
                 }
             });
-        }
 
-        // Redirecionar com filtros salvos (caso esteja limpo)
-        if (!hasParams && !exceptPaths.includes(rawPath)) {
-            const savedUrl = localStorage.getItem(urlKey);
-            const current = new URL(window.location.href);
-            let finalUrl;
-
-            if (savedUrl) {
-                const parsed = new URL(
-                    savedUrl.startsWith('?') ?
-                    window.location.origin + rawPath + savedUrl :
-                    savedUrl
-                );
-                parsed.searchParams.set('paginate', '10');
-                finalUrl = parsed.toString();
-            } else {
-                finalUrl = `${window.location.origin + rawPath}?sort=name&direction=asc&paginate=10`;
+            if (!formUrl.searchParams.has('paginate')) {
+                formUrl.searchParams.set('paginate', '10');
             }
 
-            const target = new URL(finalUrl);
-            const currentParams = new URLSearchParams(current.search);
-            const targetParams = new URLSearchParams(target.search);
-
-            const isSame = current.pathname === target.pathname && [...targetParams.entries()].every(([k, v]) =>
-                currentParams.get(k) === v);
-
-            if (!isSame) {
-                window.location.href = finalUrl;
+            if (!formUrl.searchParams.has('sort')) {
+                formUrl.searchParams.set('sort', 'id');
+                formUrl.searchParams.set('direction', 'desc');
             }
+
+            localStorage.setItem('grid_full_url_admin_person', formUrl.toString());
+            window.location.href = formUrl.toString();
+        });
+
+        // Preenche os campos com a URL atual
+        if (hasParams) {
+            const params = new URLSearchParams(window.location.search);
+            form?.querySelectorAll('select, input').forEach(el => {
+                el.addEventListener('change', () => {
+                    const formUrl = new URL(window.location.origin + rawPath);
+                    form.querySelectorAll('input, select').forEach(el2 => {
+                        const name = el2.name;
+                        if (!name) return;
+                        const isCheckbox = el2.type === 'checkbox';
+                        const val = isCheckbox ? (el2.checked ? 1 : '') : el2.value;
+                        if (val !== '') {
+                            formUrl.searchParams.set(name, val);
+                        }
+                    });
+                    localStorage.setItem('grid_full_url_admin_person', formUrl.toString());
+                });
+            });
+
+
         }
+
+
+
     });
 </script>
+
+
 
 
 <script>
@@ -219,7 +268,16 @@
 </script>
 
 
-
+<script>
+    document.querySelectorAll('a[href*="sort="]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const finalUrl = this.href;
+            localStorage.setItem('grid_full_url_admin_person', finalUrl);
+            window.location.href = finalUrl;
+        });
+    });
+</script>
 
 
 
@@ -485,5 +543,103 @@
                     .catch(() => alert('Erro ao tentar restaurar.'));
             });
         });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const activeTab = '{{ $tab ?? 'dados' }}';
+
+        document.querySelectorAll('.tab-pane').forEach(p => {
+            p.classList.remove('show', 'active');
+        });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+
+        const pane = document.querySelector('#panel_{{ $module }}_' + activeTab);
+        const link = document.querySelector('[href="#panel_{{ $module }}_' + activeTab + '"]');
+
+        if (pane && link) {
+            pane.classList.add('show', 'active');
+            link.classList.add('active');
+        }
+    });
+</script>
+
+{{-- Consulta de CEP --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cepInput = document.querySelector('[name="zipcode"]');
+
+        if (cepInput) {
+            cepInput.addEventListener('blur', function() {
+                const cep = this.value.replace(/\D/g, '');
+                if (cep.length !== 8) {
+                    erroCep();
+                    return;
+                }
+
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.erro) {
+                            erroCep();
+                        } else {
+                            document.querySelector('[name="street"]').value = data.logradouro || '';
+                            document.querySelector('[name="neighborhood"]').value = data.bairro ||
+                                '';
+                            document.querySelector('[name="city"]').value = data.localidade || '';
+                            document.querySelector('[name="state"]').value = data.uf || '';
+                            document.querySelector('[name="country"]').value = 'Brasil';
+
+                            // limpa número e complemento
+                            document.querySelector('[name="number"]').value = '';
+                            document.querySelector('[name="complement"]').value = '';
+                        }
+                    })
+                    .catch(() => erroCep());
+            });
+        }
+
+        function erroCep() {
+            alert('CEP inválido. Verifique e tente novamente.');
+            limparCampos();
+            setTimeout(() => {
+                document.querySelector('[name="zipcode"]').focus();
+            }, 10);
+        }
+
+        function limparCampos() {
+            document.querySelector('[name="zipcode"]').value = '';
+            document.querySelector('[name="street"]').value = '';
+            document.querySelector('[name="neighborhood"]').value = '';
+            document.querySelector('[name="city"]').value = '';
+            document.querySelector('[name="state"]').value = '';
+            document.querySelector('[name="country"]').value = '';
+            document.querySelector('[name="number"]').value = '';
+            document.querySelector('[name="complement"]').value = '';
+        }
+    });
+</script>
+
+
+
+{{-- Mascara de Campo --}}
+<script>
+    Inputmask({
+        mask: "99999-999"
+    }).mask("#input-zipcode");
+</script>
+
+{{-- Pula do campo zipcode para o campo number --}}
+<script>
+    Inputmask({
+        mask: "99999-999"
+    }).mask("#input-zipcode");
+
+    document.getElementById('input-zipcode').addEventListener('blur', function() {
+        document.getElementById('input-number').focus();
     });
 </script>

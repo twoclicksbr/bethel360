@@ -124,4 +124,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'url_api' => env('APP_URL_API', 'https://bethel360.test/api'),
+
 ];

@@ -23,6 +23,7 @@ class Address extends Model
         'city',
         'state',
         'country',
+        'main',
         'active',
         'deleted',
     ];
