@@ -32,50 +32,48 @@ Route::middleware(['web', 'session_auth'])->prefix('admin')->group(function () {
 
 
 
+    Route::prefix('person')->group(function () {
 
-    Route::get('/person', [PersonController::class, 'index'])->name('person.index');
-    Route::get('/person/create', [PersonController::class, 'create'])->name('person.create');
-    Route::get('/person/edit/{encodedId}', [PersonController::class, 'edit'])->name('person.edit');
+        // Grid e impressão
+        Route::get('/', [PersonController::class, 'index'])->name('person.index');
+        Route::get('/print', [PersonController::class, 'print'])->name('person.print');
 
-    Route::post('/person', [PersonController::class, 'store'])->name('person.store');
-    Route::put('/person/{id}', [PersonController::class, 'update'])->name('person.update');
-    Route::delete('/person/{id}', [PersonController::class, 'destroy'])->name('person.destroy');
-    Route::put('/person/{id}/restore', [PersonController::class, 'restore'])->name('person.restore');
+        // Criar nova pessoa
+        Route::get('/create', [PersonController::class, 'create'])->name('person.create');
+        Route::post('/', [PersonController::class, 'store'])->name('person.store');
 
-    Route::put('/person/{id}/active', [PersonController::class, 'update'])->name('person.updateActive');
+        // Editar pessoa (com abas e endereço opcional)
+        Route::get('/edit/{encodedId}/{tab?}/{encodedAddress?}', [PersonController::class, 'edit'])->name('person.edit');
+        Route::put('/{encodedId}', [PersonController::class, 'update'])->name('person.update');
 
-    Route::get('/person/print', [PersonController::class, 'print'])->name('person.print');
+        // Ativar/Inativar
+        Route::put('/{encodedId}/active', [PersonController::class, 'updateActive'])->name('person.update.active');
 
-    Route::post('/person/{id}/address', [PersonController::class, 'storeAddress'])->name('person.address.store');
-    // Route::post('/person/{id}/address', [AddressController::class, 'store']);
+        // Excluir e restaurar
+        Route::delete('/{encodedId}', [PersonController::class, 'destroy'])->name('person.destroy');
+        Route::put('/{encodedId}/restore', [PersonController::class, 'restore'])->name('person.restore');
 
+        // Endereços (formulário, store e update)
+        Route::get('/edit/{encodedId}/address', [PersonController::class, 'formAddress'])->name('person.address.create');
+        Route::get('/edit/{encodedId}/address/{encodedAddress}', [PersonController::class, 'formAddress'])->name('person.address.edit');
+        Route::post('/{encodedId}/address', [PersonController::class, 'storeAddress'])->name('person.address.store');
+        Route::put('/edit/{encodedId}/address/{encodedAddress}', [PersonController::class, 'updateAddress'])->name('person.address.update');
 
+        // Atualiza avatar da sessão
+        Route::get('/avatar/refresh', function () {
+            $avatar = PersonAvatar::where('id_person', session('authIdPerson'))
+                ->where('active', 1)
+                ->where('deleted', 0)
+                ->latest()
+                ->first();
 
+            if ($avatar) {
+                session(['authAvatarUrl' => $avatar->avatar_url]);
+            } else {
+                session()->forget('authAvatarUrl');
+            }
 
-    Route::get('/person/edit/{encodedId}/{tab?}', [PersonController::class, 'edit'])->name('person.edit');
-
-
-
-
-
-
-
-
-
-
-    Route::get('/person/avatar/refresh', function () {
-        $avatar = PersonAvatar::where('id_person', session('authIdPerson'))
-            ->where('active', 1)
-            ->where('deleted', 0)
-            ->latest()
-            ->first();
-
-        if ($avatar) {
-            session(['authAvatarUrl' => $avatar->avatar_url]);
-        } else {
-            session()->forget('authAvatarUrl'); // 👈 limpa avatar se não houver mais ativo
-        }
-
-        return response()->json(['status' => true]);
+            return response()->json(['status' => true]);
+        });
     });
 });

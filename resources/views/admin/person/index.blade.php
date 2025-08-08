@@ -252,8 +252,21 @@
                                                         </span>
                                                     @endif
                                                     <span class="text-muted fw-semibold text-muted d-block fs-7">
-                                                        Endereço, 25 - Bairro - Cidade / UF
+                                                        @if (!empty($person['main_address']))
+                                                            {{ $person['main_address']['street'] }},
+                                                            {{ $person['main_address']['number'] }}
+                                                            @if (!empty($person['main_address']['complement']))
+                                                                , {{ $person['main_address']['complement'] }}
+                                                            @endif
+                                                            <br> {{ $person['main_address']['neighborhood'] }} -
+                                                            {{ $person['main_address']['city'] }} /
+                                                            {{ $person['main_address']['state'] }}
+                                                        @else
+                                                            
+                                                        @endif
                                                     </span>
+
+
                                                 </div>
                                             </div>
                                         </td>

@@ -2,16 +2,17 @@
     @if (!empty($showActiveCheckbox))
         <div class="d-flex align-items-center me-auto">
             <div class="form-check form-switch form-check-custom form-check-danger form-check-solid">
-                <input class="form-check-input h-20px w-30px" type="checkbox" name="active" value="1"
-                    id="activeSwitch" {{ old('active', 1) ? 'checked' : '' }}>
-                <label class="form-check-label" for="activeSwitch">
-                    Público
+                <input class="form-check-input h-20px w-30px" type="checkbox" name="active" value="1" id="activeSwitch"
+                    {{ old('active', $address['active'] ?? 1) ? 'checked' : '' }}>
+
+                <label class="form-check-label" for="activeSwitch" id="activeLabel">
+                    {{ old('active', $address['active'] ?? 1) ? 'Público' : 'Inativo' }}
                 </label>
             </div>
         </div>
     @endif
 
-    <a href="{{ $routeCancel ?? '#' }}" class="btn btn-sm btn-light-danger btn-active-danger me-2">
+    <a href="{{ $routeCancel }}" class="btn btn-sm btn-light-danger btn-active-danger me-2">
         <i class="ki-duotone ki-cross-circle"><span class="path1"></span><span class="path2"></span></i>
         Cancelar
     </a>

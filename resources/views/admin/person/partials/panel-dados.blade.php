@@ -1,4 +1,4 @@
-<div class="tab-pane fade show active" id="panel_{{ $module }}_dados" role="tab-panel">
+<div class="tab-pane fade {{ $tab === 'dados' ? 'show active' : '' }}" id="panel_{{ $module }}_dados" role="tab-panel">
     <div class="d-flex flex-column gap-7 gap-lg-10">
 
         <form action="{{ route('person.update', $person['id']) }}"

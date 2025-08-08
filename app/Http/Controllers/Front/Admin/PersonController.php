@@ -72,8 +72,22 @@ class PersonController extends Controller
             ->keyBy('id_person');
 
         // Vincula avatar a cada pessoa
-        $people = array_map(function ($person) use ($avatarList) {
+        $people = array_map(function ($person) use ($avatarList, $token) {
             $person['avatar_url'] = $avatarList[$person['id']]->avatar_url ?? null;
+
+            // Busca endereço principal da pessoa
+            $addressResponse = Http::withHeaders([
+                'token' => $token,
+            ])->get(env('APP_URL_API') . "/admin/address", [
+                'target_table' => 'person',
+                'id_target' => $person['id'],
+            ]);
+
+            $addresses = $addressResponse->json('data.data') ?? [];
+            $mainAddress = collect($addresses)->firstWhere('main', 1);
+
+            $person['main_address'] = $mainAddress;
+
             return $person;
         }, $people);
 
@@ -87,7 +101,18 @@ class PersonController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.person.index', compact('people', 'pagination', 'genders'));
+        $cities = Address::where('deleted', 0)
+            ->where(function ($q) {
+                $q->where('id_credential', authIdCredential())
+                    ->orWhere('id_credential', 1);
+            })
+            ->distinct()
+            ->pluck('city')
+            ->filter()
+            ->sort()
+            ->values();
+
+        return view('admin.person.index', compact('people', 'pagination', 'genders', 'cities'));
     }
 
 
@@ -129,7 +154,7 @@ class PersonController extends Controller
         return redirect()->back()->withErrors($response->json()['errors'] ?? ['Erro ao salvar']);
     }
 
-    public function edit($encodedId, $tab = 'dados')
+    public function edit($encodedId, $tab = 'dados', $encodedAddress = null)
     {
         $id = base64_decode($encodedId);
         $token = session('authToken');
@@ -162,7 +187,7 @@ class PersonController extends Controller
             ->where('deleted', 0)
             ->exists();
 
-        // Busca os endereços via API
+        // Busca todos os endereços da pessoa
         $addressResponse = Http::withHeaders([
             'token' => $token,
         ])->get(env('APP_URL_API') . "/admin/address", [
@@ -171,6 +196,28 @@ class PersonController extends Controller
         ]);
 
         $addresses = $addressResponse->json('data.data') ?? [];
+
+        // Busca o endereço para edição, se estiver na URL
+        $address = [];
+        if ($tab === 'address' && $encodedAddress) {
+            $idAddress = base64_decode($encodedAddress);
+
+            $addressFind = collect($addresses)->firstWhere('id', $idAddress);
+
+            if (!$addressFind) {
+                abort(404, 'Endereço não encontrado.');
+            }
+
+            $address = $addressFind;
+        }
+
+        $addresses = collect($addresses)
+            ->sortByDesc('main')
+            ->values()
+            ->map(function ($item) {
+                $item['typeAddress'] = TypeAddress::find($item['id_type_address']);
+                return $item;
+            });
 
         return view('admin.person.edit', [
             'person' => $person,
@@ -192,12 +239,10 @@ class PersonController extends Controller
                 ->get(),
             'tab' => $tab ?? 'dados',
             'hasAnyAddress' => $hasAnyAddress,
-            'addresses' => $addresses, // 👈 Adicionado aqui
+            'addresses' => $addresses,
+            'address' => $address, // 👈 passa o preenchido
         ]);
     }
-
-
-
 
     public function update(Request $request, $id)
     {
@@ -335,10 +380,107 @@ class PersonController extends Controller
             'token' => session('authToken'),
         ])->post(env('APP_URL_API') . '/admin/address', $data);
 
+        $encodedId = base64_encode($request->id_target);
+
         if ($response->successful()) {
-            return redirect()->back()->with('success', 'Endereço salvo com sucesso.');
+            return redirect()->to(url("admin/person/edit/{$encodedId}/address"))
+                ->with('success', 'Endereço salvo com sucesso.');
         }
 
-        return redirect()->back()->withErrors($response->json()['errors'] ?? ['Erro ao salvar endereço.']);
+        return redirect()->to(url("admin/person/edit/{$encodedId}/address"))
+            ->withErrors($response->json()['errors'] ?? ['Erro ao salvar endereço.']);
+    }
+
+
+    public function updateAddress(Request $request, $encodedId, $encodedAddress)
+    {
+        $idPerson = base64_decode($encodedId);
+        $idAddress = base64_decode($encodedAddress);
+
+        $data = [
+            'target_table'     => $request->target_table,
+            'id_target'        => $idPerson,
+            'zipcode'          => $request->zipcode,
+            'street'           => $request->street,
+            'number'           => $request->number,
+            'complement'       => $request->complement,
+            'neighborhood'     => $request->neighborhood,
+            'city'             => $request->city,
+            'state'            => $request->state,
+            'country'          => $request->country,
+            'id_type_address'  => $request->id_type_address,
+            'main'             => $request->has('main') ? 1 : 0,
+            'active'           => $request->has('active') ? 1 : 0,
+            '_method'          => 'PUT',
+        ];
+
+        $response = Http::withHeaders([
+            'token' => session('authToken'),
+        ])->post(env('APP_URL_API') . "/admin/address/{$idAddress}", $data);
+
+        $encodedId = base64_encode($idPerson);
+
+        if ($response->successful()) {
+            return redirect()->to(url("admin/person/edit/{$encodedId}/address"))
+                ->with('success', 'Endereço atualizado com sucesso.');
+        }
+
+        return redirect()->to(url("admin/person/edit/{$encodedId}/address"))
+            ->withErrors($response->json()['errors'] ?? ['Erro ao atualizar endereço.']);
+    }
+
+    public function formAddress($encodedId, $encodedAddress = null)
+    {
+        $idPerson = base64_decode($encodedId);
+        $person = Person::findOrFail($idPerson);
+
+        $address = [];
+
+        if ($encodedAddress) {
+            $idAddress = base64_decode($encodedAddress);
+            $address = Address::where('id', $idAddress)
+                ->where('id_target', $idPerson)
+                ->where('target_table', 'person')
+                ->firstOrFail();
+        }
+
+        $typeAddresses = TypeAddress::where('deleted', 0)
+            ->where(function ($q) {
+                $q->where('id_credential', 1)->orWhere('id_credential', session('authIdCredential'));
+            })
+            ->where('active', 1)
+            ->orderBy('name')
+            ->get();
+
+        $genders = TypeGender::where('deleted', 0)
+            ->where(function ($q) {
+                $q->where('id_credential', 1)->orWhere('id_credential', session('authIdCredential'));
+            })
+            ->where('active', 1)
+            ->orderBy('name')
+            ->get();
+
+        $module = 'person';
+
+        $hasAnyAddress = Address::where('id_target', $idPerson)
+            ->where('target_table', 'person')
+            ->where('deleted', 0)
+            ->exists();
+
+        $addresses = Address::where('id_target', $idPerson)
+            ->where('target_table', 'person')
+            ->where('deleted', 0)
+            ->orderByDesc('id')
+            ->get();
+
+        return view('admin.person.edit', compact(
+            'person',
+            'address',
+            'addresses',
+            'typeAddresses',
+            'genders',
+            'module',
+            'hasAnyAddress'
+        ));
     }
 }

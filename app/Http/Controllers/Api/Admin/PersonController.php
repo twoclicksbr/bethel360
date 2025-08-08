@@ -75,6 +75,14 @@ class PersonController extends Controller
             }
         }
 
+        if ($request->filled('city')) {
+            $query->whereHas('addresses', function ($q) use ($request) {
+                $q->where('target_table', 'person')
+                    ->where('deleted', 0)
+                    ->where('city', $request->city);
+            });
+        }
+
         if ($request->filled('search_date_type') && $request->filled('search_date_range')) {
             $dates = explode(' a ', $request->search_date_range);
 

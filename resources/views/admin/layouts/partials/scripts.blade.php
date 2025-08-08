@@ -643,3 +643,11 @@
         document.getElementById('input-number').focus();
     });
 </script>
+
+{{-- Muda a label do campo active --}}
+<script>
+    document.getElementById('activeSwitch').addEventListener('change', function() {
+        const label = document.getElementById('activeLabel');
+        label.textContent = this.checked ? 'Público' : 'Inativo';
+    });
+</script>

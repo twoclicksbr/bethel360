@@ -18,4 +18,16 @@
             @endforeach
         </select>
     </div>
+
+    <div class="col-12 col-md-2 mb-3">
+        <select name="city" class="form-select mb-2" data-control="select2">
+            <option value="">Todas as cidades</option>
+            @foreach ($cities as $city)
+                <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>
+                    {{ $city }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
 </div>

@@ -36,19 +36,21 @@
                 {{-- Direita --}}
 
                 <div class="col-12 col-md-8 d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+                    
                     <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-n2">
                         <li class="nav-item">
-                            <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab"
-                                href="#panel_{{ $module }}_dados">
+                            <a class="nav-link text-active-primary pb-4 {{ $tab === 'dados' ? 'active' : '' }}"
+                                data-bs-toggle="tab" href="#panel_{{ $module }}_dados">
                                 Dados
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab"
-                                href="#panel_{{ $module }}_address">Endereços</a>
+                            <a class="nav-link text-active-primary pb-4 {{ $tab === 'address' ? 'active' : '' }}"
+                                data-bs-toggle="tab" href="#panel_{{ $module }}_address">
+                                Endereços
+                            </a>
                         </li>
-
                     </ul>
 
                     <div class="tab-content">

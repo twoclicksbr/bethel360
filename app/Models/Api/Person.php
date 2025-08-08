@@ -33,4 +33,10 @@ class Person extends Model
             ->where('deleted', 0)
             ->where('active', 1);
     }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class, 'id_target')
+            ->where('target_table', 'person');
+    }
 }
