@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "atualiza-develop": "git add . && git commit -m \"mensagem\" && git push origin develop && echo \"Develop atualizado em $(date)\" >> logs/atualizacoes.log"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.20",
