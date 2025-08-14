@@ -1,2 +1,3 @@
 "Develop atualizado em $(date)"  "teste de msg"
 "Develop atualizado em $(date)"  "Minha mensagem aqui"
+"Develop atualizado em $(date)"  "Mensagem do commit"
