@@ -4,7 +4,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "atualiza-develop": "powershell -Command \"git add . ; git commit -m ('Atualização em ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')) ; git push origin develop ; Add-Content -Path logs/atualizacoes.log -Value ('Develop atualizado em ' + (Get-Date))\""
+        "atualiza-develop": "powershell -Command \"Add-Content -Path logs/atualizacoes.log -Value ('Develop atualizado em ' + (Get-Date)) ; git add . ; git commit -m ('Atualização em ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')) ; git push origin develop\""
     },
     "devDependencies": {
         "autoprefixer": "^10.4.20",
@@ -16,5 +16,6 @@
         "vite": "^6.0.11"
     }
 }
+
 
 
