@@ -5,7 +5,7 @@
         "build": "vite build",
         "dev": "vite",
         "atualiza-develop": "powershell -Command \"Add-Content -Path logs/atualizacoes.log -Value ('Develop atualizado em ' + (Get-Date)) ; git add . ; git commit -m ('Atualização em ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')) ; git push origin develop\"",
-        "atualiza-servidor": "ssh root@168.231.64.36 \"cd /home/bethel360.com.br/public_html && git pull origin main && php artisan migrate --force && echo 'Servidor atualizado em $(date)' >> storage/logs/atualizacoes.log\""
+        "atualiza-servidor": "ssh root@168.231.64.36 \"cd /home/bethel360.com.br/public_html && git fetch origin main && git reset --hard origin/main && php artisan migrate --force && echo 'Servidor atualizado em $(date)' >> storage/logs/atualizacoes.log\""
     },
     "devDependencies": {
         "autoprefixer": "^10.4.20",
