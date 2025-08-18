@@ -130,7 +130,8 @@ class PersonController extends Controller
                 })
                 ->where('active', 1)
                 ->orderBy('name')
-                ->get()
+                ->get(),
+            'tab' => 'dados'
         ]);
     }
 
