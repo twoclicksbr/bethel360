@@ -39,4 +39,10 @@ class Person extends Model
         return $this->hasMany(Address::class, 'id_target')
             ->where('target_table', 'person');
     }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'id_target')
+            ->where('target_table', 'person');
+    }
 }

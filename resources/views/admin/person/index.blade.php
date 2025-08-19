@@ -400,3 +400,7 @@
     </div>
 
 @endsection
+
+@push('scripts')
+    @include('admin.person.partials.script-index')
+@endpush

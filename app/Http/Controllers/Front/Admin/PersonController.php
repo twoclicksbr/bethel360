@@ -105,6 +105,7 @@ class PersonController extends Controller
             ->orderBy('name')
             ->get();
 
+        // Cidades
         $cities = Address::where('deleted', 0)
             ->where(function ($q) {
                 $q->where('id_credential', authIdCredential())
@@ -116,7 +117,23 @@ class PersonController extends Controller
             ->sort()
             ->values();
 
-        return view('admin.person.index', compact('people', 'pagination', 'genders', 'cities'));
+        // Documentos
+        $typeDocuments = TypeDocument::where('deleted', 0)
+            ->where(function ($q) {
+                $q->where('id_credential', authIdCredential())
+                    ->orWhere('id_credential', 1);
+            })
+            ->where('active', 1)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.person.index', compact(
+            'people',
+            'pagination',
+            'genders',
+            'cities',
+            'typeDocuments'
+        ));
     }
 
 

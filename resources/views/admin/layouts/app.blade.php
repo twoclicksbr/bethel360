@@ -1,7 +1,7 @@
 {{-- resources/views/admin/layouts/app.blade.php --}}
 
 <script>
-    (function () {
+    (function() {
         const path = window.location.pathname;
         const pathKey = path.replaceAll('/', '_');
         const urlKey = 'grid_full_url_' + pathKey;
@@ -87,5 +87,9 @@
     {{-- Scripts --}}
     @include('admin.layouts.partials.scripts')
 
+    {{-- Scripts específicos das páginas --}}
+    @stack('scripts')
+
 </body>
+
 </html>

@@ -23,7 +23,7 @@ class PersonController extends Controller
     {
         $idCredential = authIdCredential();
 
-        $query = Person::with('gender')
+        $query = Person::with(['gender', 'documents', 'addresses'])
             ->where('id_credential', $idCredential);
 
         // 👇 Filtra por excluídos
@@ -33,7 +33,7 @@ class PersonController extends Controller
             $query->where('deleted', 0);
         }
 
-        // 🔍 Filtros
+        // 🔍 Filtros por Id
         if ($request->filled('search_id')) {
             $value = $request->search_id;
 
@@ -48,18 +48,22 @@ class PersonController extends Controller
             }
         }
 
+        // 📄 Filtro por Nome
         if ($request->filled('search_name')) {
             $query->where('name', 'like', '%' . $request->search_name . '%');
         }
 
+        // 📄 Filtro por Status
         if ($request->filled('search_active')) {
             $query->where('active', $request->search_active);
         }
 
+        // 📄 Filtro por Gênero
         if ($request->filled('id_gender')) {
             $query->where('id_gender', $request->id_gender);
         }
 
+        // 📄 Filtro por Data de Nascimento
         if ($request->filled('birthdate')) {
             $today = now();
             if ($request->birthdate === 'day') {
@@ -75,6 +79,7 @@ class PersonController extends Controller
             }
         }
 
+        // 📄 Filtro por Cidade
         if ($request->filled('city')) {
             $query->whereHas('addresses', function ($q) use ($request) {
                 $q->where('target_table', 'person')
@@ -83,6 +88,16 @@ class PersonController extends Controller
             });
         }
 
+        // 📄 Filtro por Documento
+        if ($request->filled('typeDocument') && $request->filled('valueDocument')) {
+            $query->whereHas('documents', function ($q) use ($request) {
+                $q->where('id_type_document', $request->typeDocument)
+                    ->where('value', $request->valueDocument)
+                    ->where('deleted', 0);
+            });
+        }
+
+        // 📄 Filtro por Tipo de data e intervalo
         if ($request->filled('search_date_type') && $request->filled('search_date_range')) {
             $dates = explode(' a ', $request->search_date_range);
 
@@ -112,12 +127,12 @@ class PersonController extends Controller
         // 🔄 Formata os dados e mantém paginação
         $mappedData = $paginator->getCollection()->map(function ($person) {
             return [
-                'id' => $person->id,
-                'name' => $person->name,
-                'birthdate' => $person->birthdate,
-                'active' => $person->active,
-                'id_gender' => $person->id_gender,
-                'gender' => $person->gender,
+                'id'         => $person->id,
+                'name'       => $person->name,
+                'birthdate'  => $person->birthdate,
+                'active'     => $person->active,
+                'id_gender'  => $person->id_gender,
+                'gender'     => $person->gender,
                 'created_at' => $person->getRawOriginal('created_at'),
                 'updated_at' => $person->getRawOriginal('updated_at'),
             ];
@@ -132,11 +147,12 @@ class PersonController extends Controller
         );
 
         return response()->json([
-            'status' => true,
+            'status'  => true,
             'message' => 'Listagem de pessoas',
-            'data' => $paginated,
+            'data'    => $paginated,
         ]);
     }
+
 
     // Retorna os dados de uma pessoa específica
     public function show($ids)

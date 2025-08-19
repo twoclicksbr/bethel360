@@ -30,4 +30,39 @@
         </select>
     </div>
 
+    {{-- <div class="col-12 col-md-2 mb-3">
+        <select id="id_type_document" name="typeDocument" class="form-select" data-control="select2">
+            <option value="">Documento</option>
+            @foreach ($typeDocuments as $doc)
+                <option value="{{ $doc->id }}" data-mask="{{ $doc->mask }}"
+                    {{ request('typeDocument') == $doc->id ? 'selected' : '' }}>
+                    {{ $doc->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-12 col-md-2 mb-3" id="valueDocumentWrapper" style="display:none;">
+        <input type="text" id="input-document-value" name="valueDocument" class="form-control"
+            value="{{ request('valueDocument') }}">
+    </div> --}}
+
+
+    <div class="col-12 col-md-2 mb-3">
+        <select id="typeDocument" name="typeDocument" class="form-select" data-control="select2">
+            <option value="">Documento</option>
+            @foreach ($typeDocuments as $doc)
+                <option value="{{ $doc->id }}" data-mask="{{ $doc->mask ?? '' }}"
+                    {{ request('typeDocument') == $doc->id ? 'selected' : '' }}>
+                    {{ $doc->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-12 col-md-2 mb-3" id="valueDocumentWrapper" style="display:none;">
+        <input type="text" id="valueDocument" name="valueDocument" class="form-control" placeholder="Número"
+            value="{{ request('valueDocument') }}">
+    </div>
+
 </div>
