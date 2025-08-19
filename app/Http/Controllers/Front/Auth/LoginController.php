@@ -18,7 +18,7 @@ class LoginController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $response = Http::post(env('APP_URL_API') . '/auth/login', [
+        $response = Http::post(config('app.url_api') . '/auth/login', [
             'email'    => $request->email,
             'password' => $request->password,
         ]);

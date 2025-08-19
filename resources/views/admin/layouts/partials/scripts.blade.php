@@ -51,7 +51,7 @@
 
 <!-- Define variáveis globais com base no backend -->
 <script>
-    const APP_URL_API = "{{ env('APP_URL_API') }}";
+    const APP_URL_API = "{{ config('app.url_api') }}";
     const authToken = "{{ session('authToken') }}";
 </script>
 
@@ -407,7 +407,7 @@
         const module = "{{ request()->segment(2) }}";
 
         // 🔗 Monta a URL da API para ação em massa
-        const url = `{{ env('APP_URL_API') }}/admin/${module}/batch-status`;
+        const url = `{{ config('app.url_api') }}/admin/${module}/batch-status`;
 
         // ⛔ Se o ID logado estiver na lista, bloqueia a ação
         if (ids.includes(authIdPerson)) {
@@ -534,7 +534,7 @@
                     .module; // Nome do módulo (person, address, document...)
                 const redirectUrl = this.dataset
                     .redirect; // URL opcional para redirecionar após excluir
-                const apiUrl = "{{ env('APP_URL_API') }}"; // URL base da API definida no .env
+                const apiUrl = "{{ config('app.url_api') }}"; // URL base da API definida no .env
                 const authIdPerson =
                     {{ session('authIdPerson') ?? 'null' }}; // ID da pessoa logada
 

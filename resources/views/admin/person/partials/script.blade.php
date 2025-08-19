@@ -12,7 +12,7 @@
         const personId = '{{ $person['id'] }}';
 
         // Buscar avatar atual
-        fetch(`{{ env('APP_URL_API') }}/admin/person/${personId}/avatar`, {
+        fetch(`{{ config('app.url_api') }}/admin/person/${personId}/avatar`, {
                 headers: {
                     'token': '{{ session('authToken') }}'
                 }
@@ -109,7 +109,7 @@
             btnRemove.addEventListener('click', function() {
                 if (!confirm('Tem certeza que deseja remover o avatar?')) return;
 
-                fetch(`{{ env('APP_URL_API') }}/admin/person/${personId}/avatar`, {
+                fetch(`{{ config('app.url_api') }}/admin/person/${personId}/avatar`, {
                         method: 'DELETE',
                         headers: {
                             'token': '{{ session('authToken') }}'
@@ -170,7 +170,7 @@
         if (btnCancel) {
             btnCancel.addEventListener('click', function() {
                 setTimeout(() => {
-                    fetch(`{{ env('APP_URL_API') }}/admin/person/${personId}/avatar`, {
+                    fetch(`{{ config('app.url_api') }}/admin/person/${personId}/avatar`, {
                             headers: {
                                 'token': '{{ session('authToken') }}'
                             }
