@@ -7,7 +7,7 @@
     <div class="card-body text-center pt-0">
 
         <form method="POST" enctype="multipart/form-data" id="avatarForm"
-            action="{{ env('APP_URL_API') . '/admin/person/' . $person['id'] . '/avatar' }}">
+            action="{{ config('app.url_api') . '/admin/person/' . $person['id'] . '/avatar' }}">
 
             @csrf
             <div class="image-input image-input-outline mb-3" data-kt-image-input="true">
