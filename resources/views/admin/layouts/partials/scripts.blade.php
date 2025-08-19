@@ -250,12 +250,18 @@
             const name = field.name;
             const type = field.type;
 
-            if (['search_id', 'search_name', 'search_date_type'].includes(name)) return;
+            // campos que NÃO disparam submit automático
+            if (
+                ['search_id', 'search_name', 'search_date_type'].includes(name) || ['typeDocument',
+                    'valueDocument'
+                ].includes(name) // 👈 adicionei aqui
+            ) {
+                return;
+            }
 
             const submitForm = () => form.submit();
 
             if (field.dataset.control === 'select2') {
-                // evento especial para select2
                 $(field).on('select2:select', submitForm);
             } else if (['checkbox', 'radio'].includes(type)) {
                 field.addEventListener('click', submitForm);
@@ -265,6 +271,7 @@
         });
     });
 </script>
+
 
 
 <script>
@@ -534,7 +541,8 @@
                     .module; // Nome do módulo (person, address, document...)
                 const redirectUrl = this.dataset
                     .redirect; // URL opcional para redirecionar após excluir
-                const apiUrl = "{{ config('app.url_api') }}"; // URL base da API definida no .env
+                const apiUrl =
+                "{{ config('app.url_api') }}"; // URL base da API definida no .env
                 const authIdPerson =
                     {{ session('authIdPerson') ?? 'null' }}; // ID da pessoa logada
 

@@ -90,4 +90,6 @@
 
 @endsection
 
-@include('admin.person.partials.script')
+@push('scripts')
+    @include('admin.person.partials.script-edit')
+@endpush
