@@ -57,15 +57,14 @@
                                                 <!--begin:Menu item-->
                                                 <div class="menu-item p-0 m-0">
                                                     <!--begin:Menu link-->
-                                                    <a href="index.html" class="menu-link active">
+                                                    <a href="{{ route('dashboard') }}" class="menu-link active">
                                                         <span
                                                             class="menu-custom-icon d-flex flex-center flex-shrink-0 rounded w-40px h-40px me-3">
                                                             <i class="ki-outline ki-element-11 text-primary fs-1"></i>
                                                         </span>
                                                         <span class="d-flex flex-column">
-                                                            <span class="fs-6 fw-bold text-gray-800">Default</span>
-                                                            <span class="fs-7 fw-semibold text-muted">Reports
-                                                                & statistics</span>
+                                                            <span class="fs-6 fw-bold text-gray-800">Painel da Liderança</span>
+                                                            <span class="fs-7 fw-semibold text-muted">Relatórios e estatísticas</span>
                                                         </span>
                                                     </a>
                                                     <!--end:Menu link-->
