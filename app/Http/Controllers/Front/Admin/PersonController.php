@@ -56,7 +56,7 @@ class PersonController extends Controller
         // Lista de pessoas
         $response = Http::withHeaders([
             'token' => $token,
-        ])->get(env('APP_URL_API') . '/admin/person', $query);
+        ])->get(config('app.url_api') . '/admin/person', $query);
 
         $json = $response->json();
         $pagination = $json['data'] ?? [];
@@ -82,7 +82,7 @@ class PersonController extends Controller
             // Busca endereço principal da pessoa
             $addressResponse = Http::withHeaders([
                 'token' => $token,
-            ])->get(env('APP_URL_API') . "/admin/address", [
+            ])->get(config('app.url_api') . "/admin/address", [
                 'target_table' => 'person',
                 'id_target' => $person['id'],
             ]);
@@ -139,7 +139,7 @@ class PersonController extends Controller
     {
         $response = Http::withHeaders([
             'token' => session('authToken'),
-        ])->post(env('APP_URL_API') . '/admin/person', [
+        ])->post(config('app.url_api') . '/admin/person', [
             'name'       => $request->name,
             'birthdate'  => $request->birthdate,
             'id_gender'  => $request->id_gender,
@@ -167,7 +167,7 @@ class PersonController extends Controller
         // Busca a pessoa
         $response = Http::withHeaders([
             'token' => $token,
-        ])->get(env('APP_URL_API') . "/admin/person/$id");
+        ])->get(url: config('app.url_api') . "/admin/person/$id");
 
         $person = $response->json('data');
 
@@ -178,7 +178,7 @@ class PersonController extends Controller
         // Busca o avatar
         $avatarResponse = Http::withHeaders([
             'token' => $token,
-        ])->get(env('APP_URL_API') . "/admin/person/$id/avatar");
+        ])->get(config('app.url_api') . "/admin/person/$id/avatar");
 
         $avatarData = $avatarResponse->json();
 
@@ -195,7 +195,7 @@ class PersonController extends Controller
         // Busca todos os endereços da pessoa
         $addressResponse = Http::withHeaders([
             'token' => $token,
-        ])->get(env('APP_URL_API') . "/admin/address", [
+        ])->get(config('app.url_api') . "/admin/address", [
             'target_table' => 'person',
             'id_target'    => $id,
         ]);
@@ -284,7 +284,7 @@ class PersonController extends Controller
     {
         $response = Http::asForm()->withHeaders([
             'token' => session('authToken'),
-        ])->post(env('APP_URL_API') . "/admin/person/$id?_method=PUT", [
+        ])->post(config('app.url_api') . "/admin/person/$id?_method=PUT", [
             'name'      => $request->name,
             'birthdate' => $request->birthdate,
             'id_gender' => $request->id_gender,
@@ -316,7 +316,7 @@ class PersonController extends Controller
 
         $response = Http::asForm()->withHeaders([
             'token' => session('authToken'),
-        ])->post(env('APP_URL_API') . "/admin/person/$id/active?_method=PUT", [
+        ])->post(config('app.url_api') . "/admin/person/$id/active?_method=PUT", [
             'active' => $request->input('active', 1),
         ]);
 
@@ -336,7 +336,7 @@ class PersonController extends Controller
 
         $response = Http::withHeaders([
             'token' => $token,
-        ])->delete(env('APP_URL_API') . "/admin/person/{$id}");
+        ])->delete(config('app.url_api') . "/admin/person/{$id}");
 
         return redirect()->route('person.index');
     }
@@ -347,7 +347,7 @@ class PersonController extends Controller
 
         $response = Http::withHeaders([
             'token' => $token,
-        ])->put(env('APP_URL_API') . "/admin/person/{$id}/restore");
+        ])->put(config('app.url_api') . "/admin/person/{$id}/restore");
 
         return redirect()->route('person.index');
     }
@@ -363,7 +363,7 @@ class PersonController extends Controller
         // Envia junto o token e os filtros
         $response = Http::withHeaders([
             'token' => $token
-        ])->get(env('APP_URL_API') . '/admin/person', $filters);
+        ])->get(config('app.url_api') . '/admin/person', $filters);
 
         $json = $response->json();
         $people = $json['data']['data'] ?? [];
@@ -412,7 +412,7 @@ class PersonController extends Controller
 
         $response = Http::withHeaders([
             'token' => session('authToken'),
-        ])->post(env('APP_URL_API') . '/admin/address', $data);
+        ])->post(config('app.url_api') . '/admin/address', $data);
 
         $encodedId = base64_encode($request->id_target);
 
@@ -450,7 +450,7 @@ class PersonController extends Controller
 
         $response = Http::withHeaders([
             'token' => session('authToken'),
-        ])->post(env('APP_URL_API') . "/admin/address/{$idAddress}", $data);
+        ])->post(config('app.url_api') . "/admin/address/{$idAddress}", $data);
 
         $encodedId = base64_encode($idPerson);
 
@@ -532,7 +532,7 @@ class PersonController extends Controller
 
         $response = Http::withHeaders([
             'token' => session('authToken'),
-        ])->post(env('APP_URL_API') . '/admin/document', $data);
+        ])->post(config('app.url_api') . '/admin/document', $data);
 
         if ($response->successful()) {
             return redirect()
@@ -573,7 +573,7 @@ class PersonController extends Controller
 
         $response = Http::withHeaders([
             'token' => session('authToken'),
-        ])->post(env('APP_URL_API') . "/admin/document/{$idDocument}", $data);
+        ])->post(config('app.url_api') . "/admin/document/{$idDocument}", $data);
 
         if ($response->successful()) {
             // Opcional: manter na mesma página do documento
