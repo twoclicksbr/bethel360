@@ -28,9 +28,10 @@
     <!-- Global Stylesheets -->
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
 
-    
-    
+
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <!-- JS -->
@@ -42,4 +43,8 @@
             window.top.location.replace(window.self.location.href);
         }
     </script>
+
+
+    
+    
 </head>
