@@ -1,0 +1,11 @@
+.btn-bethel-lg {
+    width: 300px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.pb-lg-40 {
+  padding-bottom: 10rem !important; /* mesmo padrão do Bootstrap */
+}

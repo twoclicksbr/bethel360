@@ -7,9 +7,17 @@ use App\Http\Controllers\Front\Auth\LoginController;
 use App\Http\Controllers\Front\Admin\DashboardController;
 use App\Models\Api\PersonAvatar;
 
+
+// Rotas do site INICIO
 Route::get('/', function () {
     return view('site');
-});
+})->name('site');
+
+
+
+
+
+// Rotas do site FIM
 
 Route::get('/auth/login', [LoginController::class, 'showForm']);
 Route::post('/auth/login', [LoginController::class, 'login'])->name('auth.login.post');

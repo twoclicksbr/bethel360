@@ -86,6 +86,105 @@
                     <!--end::Col-->
                 </div>
                 <!--end::Misc Widget 1-->
+
+
+                <!--begin::Wrapper-->
+                <div class="w-100">
+                    <label class="fw-bold mb-2">Quantidade de Pessoas</label>
+
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="me-2">Qtd:</span>
+                        <span id="label_qtde" class="fw-bold fs-3"></span>
+                    </div>
+                    <div id="slider_qtde" class="noUi-sm mb-7"></div>
+
+                    <div class="d-flex flex-column gap-3">
+                        <div><strong>Implantação:</strong> R$ <span id="label_implantacao"></span></div>
+                        <div><strong>Mensal:</strong> R$ <span id="label_mensal"></span></div>
+                    </div>
+                </div>
+
+                <script>
+                    const valores = {
+                        500: {
+                            implantacao: 2295,
+                            mensal: 745
+                        },
+                        1000: {
+                            implantacao: 4590,
+                            mensal: 1490
+                        },
+                        1500: {
+                            implantacao: 6845,
+                            mensal: 1795
+                        },
+                        2000: {
+                            implantacao: 9100,
+                            mensal: 2190
+                        },
+                        2500: {
+                            implantacao: 11085,
+                            mensal: 2490
+                        },
+                        3000: {
+                            implantacao: 13070,
+                            mensal: 2790
+                        },
+                        3500: {
+                            implantacao: 15035,
+                            mensal: 3040
+                        },
+                        4000: {
+                            implantacao: 17000,
+                            mensal: 3290
+                        },
+                        4500: {
+                            implantacao: 19015,
+                            mensal: 3540
+                        },
+                        5000: {
+                            implantacao: 21030,
+                            mensal: 3790
+                        },
+                    };
+
+                    const slider = document.getElementById('slider_qtde');
+                    const labelQtde = document.getElementById('label_qtde');
+                    const labelImplantacao = document.getElementById('label_implantacao');
+                    const labelMensal = document.getElementById('label_mensal');
+
+                    noUiSlider.create(slider, {
+                        start: [1000],
+                        step: 500,
+                        range: {
+                            'min': 500,
+                            'max': 5000
+                        },
+                        format: {
+                            to: value => parseInt(value),
+                            from: value => parseInt(value)
+                        }
+                    });
+
+                    slider.noUiSlider.on('update', function(values) {
+                        const qtde = values[0];
+                        const val = valores[qtde];
+                        labelQtde.innerText = qtde;
+                        labelImplantacao.innerText = val.implantacao.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2
+                        });
+                        labelMensal.innerText = val.mensal.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2
+                        });
+                    });
+                </script>
+
+
+
+                <!--end::Wrapper-->
+
+
+
                 <!--begin::List Widget 5-->
                 <div class="card mb-5 mb-xl-8">
                     <!--begin::Header-->
