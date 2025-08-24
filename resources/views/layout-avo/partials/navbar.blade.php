@@ -1,0 +1,67 @@
+{{-- resources\views\layout-avo\partials\navbar.blade.php --}}
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+        <!-- Logo -->
+        <a class="" href="#">
+            <img src="{{ asset('avo/img/logo-h-white-green.svg') }}" alt="logo" style="max-width: 200px">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="icon-bar"><i class="fas fa-bars"></i></span>
+        </button>
+
+        <!-- navbar links -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="true" aria-expanded="false">Home</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="index.html">Main Home</a>
+                        <a class="dropdown-item" href="index2.html">Creative Studio</a>
+                        <a class="dropdown-item" href="index3.html">Business Startup</a>
+                        <a class="dropdown-item" href="index4.html">One Page</a>
+                        <a class="dropdown-item" href="index5.html">Freelancer</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="true" aria-expanded="false">Showcases</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="showcase.html">Full Screen</a>
+                        <a class="dropdown-item" href="showcase2.html">Creative Carousel</a>
+                        <a class="dropdown-item" href="showcase3.html">Radius Carousel</a>
+                        <a class="dropdown-item" href="showcase4.html">Columns Carousel</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">About</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="true" aria-expanded="false">Portfolio</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="works.html">Mouse Info</a>
+                        <a class="dropdown-item" href="works2.html">Masonry 3 Columns</a>
+                        <a class="dropdown-item" href="works3.html">Masonry 2 Columns</a>
+                        <a class="dropdown-item" href="works4.html">Pinterest List</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact</a>
+                </li>
+            </ul>
+            <div class="search">
+                <span class="icon pe-7s-search cursor-pointer"></span>
+                <div class="search-form text-center custom-font">
+                    <form>
+                        <input type="text" name="search" placeholder="Search">
+                    </form>
+                    <span class="close pe-7s-close cursor-pointer"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
