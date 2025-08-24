@@ -72,6 +72,7 @@
                         </a>
                     </div>
                 </div>
+                
             </div>
         </div>
         <div class="copyrights d-flex justify-content-between align-items-center px-4">
