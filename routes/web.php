@@ -6,11 +6,21 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\Auth\LoginController;
 use App\Http\Controllers\Front\Admin\DashboardController;
 use App\Models\Api\PersonAvatar;
-
+use Illuminate\Support\Facades\Cookie;
 
 // Rotas do site INICIO
+// Route::get('/', function () {
+//     return view('site');
+// })->name('site');
+
+
 Route::get('/', function () {
-    return view('site');
+    if (!Cookie::has('visited_site')) {
+        Cookie::queue('visited_site', true, 60 * 24 * 30); // válido por 30 dias
+        return view('site'); // primeira visita → mostra site.blade.php
+    }
+
+    return view('home'); // visitas seguintes → home.blade.php
 })->name('site');
 
 
