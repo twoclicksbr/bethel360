@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Cookie;
 // Rotas do site INICIO
 Route::get('/', function () {
     if (!Cookie::has('visited_site')) {
-        Cookie::queue('visited_site', true, 60 * 24 * 30); // válido por 30 dias
-        return view('site'); // primeira visita → mostra site.blade.php
+        Cookie::queue(Cookie::make('visited_site', true, 60 * 24 * 30, '/'));
+        return response()->view('site');
     }
 
-    return view('home'); // visitas seguintes → home.blade.php
+    return view('home');
 })->name('site');
 
 
