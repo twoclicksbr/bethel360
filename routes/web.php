@@ -9,11 +9,6 @@ use App\Models\Api\PersonAvatar;
 use Illuminate\Support\Facades\Cookie;
 
 // Rotas do site INICIO
-// Route::get('/', function () {
-//     return view('site');
-// })->name('site');
-
-
 Route::get('/', function () {
     if (!Cookie::has('visited_site')) {
         Cookie::queue('visited_site', true, 60 * 24 * 30); // válido por 30 dias
