@@ -15,6 +15,9 @@
         <!-- navbar links -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('site') }}">Home</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
                         aria-haspopup="true" aria-expanded="false">Home</a>
@@ -52,8 +55,20 @@
                 <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>
                 </li>
+
+                @if (session()->has('authToken'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('dashboard') }}">Bem vindo: {{ session('authNameFirst') }}</a>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('auth.login.post') }}">Entrar</a>
+                    </li>
+                @endif
+
+
             </ul>
-            <div class="search">
+            {{-- <div class="search">
                 <span class="icon pe-7s-search cursor-pointer"></span>
                 <div class="search-form text-center custom-font">
                     <form>
@@ -61,7 +76,7 @@
                     </form>
                     <span class="close pe-7s-close cursor-pointer"></span>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </nav>
