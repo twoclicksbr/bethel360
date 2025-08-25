@@ -11,12 +11,18 @@ use Illuminate\Support\Facades\Cookie;
 // Rotas do site INICIO
 Route::get('/', function () {
     if (!Cookie::has('visited_site')) {
+        // Apaga qualquer resquício
+        Cookie::queue(Cookie::forget('visited_site'));
+
+        // Cria o cookie com path correto
         Cookie::queue(Cookie::make('visited_site', true, 60 * 24 * 30, '/'));
+
         return response()->view('site');
     }
 
     return view('home');
 })->name('site');
+
 
 
 
